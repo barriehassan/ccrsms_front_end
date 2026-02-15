@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assign Staff - Admin Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#F3F4F6',
+                        dark: '#1F2937',
+                        accent: '#F59E0B',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 font-sans">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside
+            class="bg-gray-800 text-white shadow-xl h-screen flex flex-col sticky top-0 transition-all duration-300 w-64 flex-shrink-0">
+            <div class="p-6 border-b border-gray-700 flex items-center justify-between">
+                <h2 class="text-xl font-bold flex items-center gap-2 whitespace-nowrap overflow-hidden">
+                    <span class="bg-yellow-500 text-gray-900 p-1 rounded text-sm font-extrabold">AP</span>
+                    Admin Portal
+                </h2>
+            </div>
+
+            <nav class="flex-1 p-3 space-y-2 overflow-y-auto overflow-x-hidden">
+                <a href="dashboard.html"
+                    class="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors font-medium whitespace-nowrap text-gray-400 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-tachometer-alt text-xl flex-shrink-0"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="complaints.html"
+                    class="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors font-medium whitespace-nowrap text-gray-400 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-clipboard-list text-xl flex-shrink-0"></i>
+                    <span>Complaints</span>
+                </a>
+                <a href="#"
+                    class="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors font-medium whitespace-nowrap text-gray-400 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-file-contract text-xl flex-shrink-0"></i>
+                    <span>Permits</span>
+                </a>
+                <a href="assign-staff.html"
+                    class="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors font-medium whitespace-nowrap bg-blue-600 text-white shadow-md">
+                    <i class="fas fa-user-shield text-xl flex-shrink-0"></i>
+                    <span>Assign Staff</span>
+                </a>
+                <a href="users.html"
+                    class="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors font-medium whitespace-nowrap text-gray-400 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-users text-xl flex-shrink-0"></i>
+                    <span>Users</span>
+                </a>
+                <a href="analytics.html"
+                    class="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors font-medium whitespace-nowrap text-gray-400 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-chart-bar text-xl flex-shrink-0"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="settings.html"
+                    class="flex items-center gap-3 px-3 py-3 rounded-lg transition-colors font-medium whitespace-nowrap text-gray-400 hover:bg-gray-700 hover:text-white">
+                    <i class="fas fa-cog text-xl flex-shrink-0"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="p-4 border-t border-gray-700">
+                <button
+                    class="flex items-center gap-3 px-3 py-3 w-full text-red-400 hover:bg-red-900/20 rounded-lg transition-colors font-medium whitespace-nowrap">
+                    <i class="fas fa-sign-out-alt text-xl flex-shrink-0"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-grow bg-gray-100 h-screen overflow-y-auto p-8">
+            <div class="max-w-7xl mx-auto">
+                <header class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-900">Task Assignment</h1>
+                    <p class="text-gray-500">Assign pending complaints to field officers.</p>
+                </header>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 space-y-6">
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex gap-4 items-center">
+                            <div class="relative flex-grow">
+                                <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                                <input type="text" placeholder="Search unassigned complaints..."
+                                    class="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500" />
+                            </div>
+                            <button
+                                class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
+                                <i class="fas fa-filter"></i> Filter
+                            </button>
+                        </div>
+
+                        <div class="space-y-4">
+                            <!-- Complaint 1 -->
+                            <div
+                                class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex justify-between items-center hover:shadow-md transition-shadow">
+                                <div>
+                                    <div class="flex gap-2 mb-1">
+                                        <span
+                                            class="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded">CMP-2023-015</span>
+                                        <span
+                                            class="text-xs font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded">Sanitation</span>
+                                    </div>
+                                    <h3 class="font-bold text-gray-900 text-lg">Blocked Drainage at PZ</h3>
+                                    <p class="text-gray-500 text-sm">PZ Roundabout</p>
+                                </div>
+                                <button
+                                    class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors shadow-sm">
+                                    <i class="fas fa-user-plus"></i> Assign
+                                </button>
+                            </div>
+                            <!-- Complaint 2 -->
+                            <div
+                                class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex justify-between items-center hover:shadow-md transition-shadow">
+                                <div>
+                                    <div class="flex gap-2 mb-1">
+                                        <span
+                                            class="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded">CMP-2023-018</span>
+                                        <span
+                                            class="text-xs font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded">Environment</span>
+                                    </div>
+                                    <h3 class="font-bold text-gray-900 text-lg">Fallen Tree</h3>
+                                    <p class="text-gray-500 text-sm">Hill Station</p>
+                                </div>
+                                <button
+                                    class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors shadow-sm">
+                                    <i class="fas fa-user-plus"></i> Assign
+                                </button>
+                            </div>
+                            <!-- Complaint 3 -->
+                            <div
+                                class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex justify-between items-center hover:shadow-md transition-shadow">
+                                <div>
+                                    <div class="flex gap-2 mb-1">
+                                        <span
+                                            class="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-0.5 rounded">CMP-2023-021</span>
+                                        <span
+                                            class="text-xs font-bold bg-blue-50 text-blue-600 px-2 py-0.5 rounded">Water</span>
+                                    </div>
+                                    <h3 class="font-bold text-gray-900 text-lg">Broken Pipe</h3>
+                                    <p class="text-gray-500 text-sm">Lumley</p>
+                                </div>
+                                <button
+                                    class="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors shadow-sm">
+                                    <i class="fas fa-user-plus"></i> Assign
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+                            <h3 className="font-bold text-gray-900 mb-4">Available Officers</h3>
+                            <div class="space-y-4">
+                                <div
+                                    class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-gray-100">
+                                    <div
+                                        class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold text-sm">
+                                        ON</div>
+                                    <div>
+                                        <p class="font-bold text-sm text-gray-900">Officer John Doe</p>
+                                        <p class="text-xs text-gray-500">Central &bull; 2 Active Tasks</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-gray-100">
+                                    <div
+                                        class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold text-sm">
+                                        ON</div>
+                                    <div>
+                                        <p class="font-bold text-sm text-gray-900">Officer Jane Smith</p>
+                                        <p class="text-xs text-gray-500">West End &bull; 0 Active Tasks</p>
+                                    </div>
+                                </div>
+                                <div
+                                    class="flex items-center gap-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors border border-transparent hover:border-gray-100">
+                                    <div
+                                        class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center text-green-700 font-bold text-sm">
+                                        ON</div>
+                                    <div>
+                                        <p class="font-bold text-sm text-gray-900">Officer Mike Brown</p>
+                                        <p class="text-xs text-gray-500">East End &bull; 1 Active Task</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button
+                                class="w-full mt-6 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-lg font-medium transition-colors">
+                                View Staff Roster
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>
