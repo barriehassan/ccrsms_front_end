@@ -118,7 +118,13 @@ const ComplaintDetails = () => {
                             </div>
                             {complaint.street_name && (
                                 <div className="flex items-center gap-1">
-                                    <FaMapMarkerAlt /> {complaint.location} - {complaint.street_name}
+                                    <FaMapMarkerAlt />{complaint.street_name}
+                                </div>
+                            )}
+
+                            {complaint.location && (
+                                <div className="flex items-center gap-1">
+                                    <FaMapMarkerAlt /> {complaint.location}
                                 </div>
                             )}
                         </div>

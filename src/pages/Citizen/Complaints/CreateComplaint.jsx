@@ -16,7 +16,7 @@ const CreateComplaint = () => {
     const [stream, setStream] = useState(null);
     const [capturedImage, setCapturedImage] = useState(null);
     const [isCameraOpen, setIsCameraOpen] = useState(false);
-    const [locationData, setLocationData] = useState({ lat: null, lng: null, address: '', accuracy: null });
+    const [locationData, setLocationData] = useState({ lat: null, lng: null, address: '', accuracy: null, addressFound: true });
     const [locationError, setLocationError] = useState(null);
     const [isLocating, setIsLocating] = useState(false);
     const [categories, setCategories] = useState([]);
@@ -57,13 +57,8 @@ const CreateComplaint = () => {
 
             setIsLocating(false); // STOP LOCATING (Success)
 
-            // Logic: Update state with new coordinates
-            setLocationData(prev => ({
-                ...prev,
-                lat: latitude,
-                lng: longitude,
-                accuracy: accuracy
-            }));
+            let resolvedAddress = '';
+            let isAddressFound = false;
 
             // Reverse Geo only if accurate enough (< 1000m)
             if (accuracy < 1000) {
@@ -73,14 +68,30 @@ const CreateComplaint = () => {
                     });
                     if (!response.ok) throw new Error("Addr lookup failed");
                     const data = await response.json();
-                    setLocationData(prev => ({ ...prev, address: data.display_name }));
+                    
+                    if (data && data.display_name) {
+                        resolvedAddress = data.display_name;
+                        isAddressFound = true;
+                    } else {
+                        resolvedAddress = "Address not found for these coordinates.";
+                    }
                 } catch (error) {
                     console.error("Reverse geo error:", error);
-                    setLocationData(prev => ({ ...prev, address: `Lat: ${latitude.toFixed(5)}, Lng: ${longitude.toFixed(5)}` }));
+                    resolvedAddress = "Failed to retrieve street name. Network error.";
                 }
             } else {
-                setLocationData(prev => ({ ...prev, address: `Low accuracy (${Math.round(accuracy)}m). Try moving outside.` }));
+                resolvedAddress = `Low accuracy (${Math.round(accuracy)}m). Try moving outside.`;
             }
+
+            // Logic: Update state with new coordinates and address status
+            setLocationData(prev => ({
+                ...prev,
+                lat: latitude,
+                lng: longitude,
+                accuracy: accuracy,
+                address: resolvedAddress,
+                addressFound: isAddressFound
+            }));
         };
 
         const handleError = (err) => {
@@ -219,6 +230,7 @@ const CreateComplaint = () => {
             description: '',
             priority_level: 'LOW',
             image: null,
+            manual_address: '',
         },
         validationSchema: Yup.object({
             title: Yup.string().required('Title is required'),
@@ -232,6 +244,11 @@ const CreateComplaint = () => {
                 Swal.fire('Location Missing', 'Please click "Get Location" to tag your report.', 'warning');
                 return;
             }
+            
+            if (!locationData.addressFound && !values.manual_address.trim()) {
+                Swal.fire('Street Name Required', 'Automatic address resolution failed. Please enter the street name manually.', 'warning');
+                return;
+            }
 
             const formData = new FormData();
             formData.append('title', values.title);
@@ -240,7 +257,9 @@ const CreateComplaint = () => {
             formData.append('priority_level', values.priority_level);
             formData.append('latitude', locationData.lat);
             formData.append('longitude', locationData.lng);
-            formData.append('street_name', locationData.address ? locationData.address.substring(0, 200) : '');
+            
+            const finalStreetName = locationData.addressFound ? locationData.address : values.manual_address;
+            formData.append('street_name', finalStreetName ? finalStreetName.substring(0, 200) : '');
 
             if (values.image) {
                 formData.append('evidence_image', values.image);
@@ -314,6 +333,21 @@ const CreateComplaint = () => {
                                        but if lat is null and no error, and we clicked start, we want either a button or text.
                                        Let's keep it simple: Show button if no lat. */
                                     null
+                                )}
+
+                                {locationData.lat && !locationData.addressFound && (
+                                    <div className="mt-4 pt-3 border-t border-blue-200">
+                                        <label className="text-sm font-medium text-gray-800">Please enter street name manually <span className="text-red-500">*</span></label>
+                                        <input
+                                            type="text"
+                                            name="manual_address"
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                            value={formik.values.manual_address}
+                                            placeholder="e.g., 123 Main St near Central Park"
+                                            className="w-full px-3 py-2 mt-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                        />
+                                    </div>
                                 )}
                             </div>
 

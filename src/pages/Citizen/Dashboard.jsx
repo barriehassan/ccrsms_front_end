@@ -134,18 +134,30 @@ const Dashboard = () => {
 
                 <Card>
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-xl font-bold text-gray-900">Notifications</h3>
-                        <Link to="/citizen/notifications" className="text-primary hover:underline text-sm font-medium">View All</Link>
+                        <h3 className="text-xl font-bold text-gray-900">Quick Actions & Reminders</h3>
+                        <Link to="/citizen/payments" className="text-primary hover:underline text-sm font-medium">View All</Link>
                     </div>
-                    <div className="space-y-4">
-                        <div className="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
-                            <p className="text-sm text-gray-800">Your complaint #1234 has been assigned to a staff member.</p>
-                            <p className="text-xs text-gray-500 mt-1">2 hours ago</p>
-                        </div>
-                        <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg">
-                            <p className="text-sm text-gray-800">Complaint #1230 has been resolved. Please rate the service.</p>
-                            <p className="text-xs text-gray-500 mt-1">Yesterday</p>
-                        </div>
+                    <div className="space-y-3">
+                        <Link to="/citizen/payments" className="block">
+                            <div className="p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg hover:bg-blue-100 transition-colors cursor-pointer">
+                                <p className="text-sm font-semibold text-gray-900">💰 Check Your Payment Status</p>
+                                <p className="text-xs text-gray-600 mt-1">View bills, make payments, and access receipt history</p>
+                            </div>
+                        </Link>
+                        
+                        <Link to="/citizen/complaints/create" className="block">
+                            <div className="p-4 bg-green-50 border-l-4 border-green-500 rounded-r-lg hover:bg-green-100 transition-colors cursor-pointer">
+                                <p className="text-sm font-semibold text-gray-900">📝 Submit a New Complaint</p>
+                                <p className="text-xs text-gray-600 mt-1">Report an issue to the city council</p>
+                            </div>
+                        </Link>
+
+                        <Link to="/citizen/permits" className="block">
+                            <div className="p-4 bg-purple-50 border-l-4 border-purple-500 rounded-r-lg hover:bg-purple-100 transition-colors cursor-pointer">
+                                <p className="text-sm font-semibold text-gray-900">📋 Manage Permits</p>
+                                <p className="text-xs text-gray-600 mt-1">Apply for permits or check existing applications</p>
+                            </div>
+                        </Link>
                     </div>
                 </Card>
             </div>

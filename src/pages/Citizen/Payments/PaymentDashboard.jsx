@@ -1,22 +1,121 @@
 import { useNavigate } from 'react-router-dom';
-import { FaMoneyBillWave, FaHistory, FaFileInvoiceDollar, FaExclamationCircle, FaArrowRight, FaCheckCircle } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { FaMoneyBillWave, FaHistory, FaFileInvoiceDollar, FaExclamationCircle, FaArrowRight, FaCheckCircle, FaSpinner } from 'react-icons/fa';
 import Card from '../../../components/UI/Card';
 import Button from '../../../components/UI/Button';
+import { getUserBills, getUserPayments, getPaymentStats } from '../../../services/paymentService';
+import Swal from 'sweetalert2';
 
 const PaymentDashboard = () => {
     const navigate = useNavigate();
+    
+    const [stats, setStats] = useState({
+        totalPaid: 0,
+        pendingAmount: 0,
+        lastPaymentAmount: 0,
+    });
+    
+    const [pendingBills, setPendingBills] = useState([]);
+    const [recentPayments, setRecentPayments] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
-    const stats = [
-        { label: "Total Paid (YTD)", value: "Le 4,500,000", icon: FaMoneyBillWave, color: "text-green-600", bg: "bg-green-100" },
-        { label: "Pending Bills", value: "Le 250,000", icon: FaExclamationCircle, color: "text-red-600", bg: "bg-red-100" },
-        { label: "Last Payment", value: "Le 500,000", icon: FaHistory, color: "text-blue-600", bg: "bg-blue-100" },
-    ];
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                
+                // Fetch stats and payments data in parallel
+                const [statsResponse, paymentsResponse, billsResponse] = await Promise.all([
+                    getPaymentStats(),
+                    getUserPayments(),
+                    getUserBills()
+                ]);
 
-    const recentPayments = [
-        { id: "TX-9981", type: "City Rates", amount: "Le 500,000", date: "12 Dec 2023", status: "Paid" },
-        { id: "TX-9980", type: "Waste Collection", amount: "Le 50,000", date: "10 Nov 2023", status: "Paid" },
-        { id: "TX-9979", type: "Market Dues", amount: "Le 25,000", date: "01 Nov 2023", status: "Failed" },
-    ];
+                // Process stats data from backend
+                const totalPaid = statsResponse.total_paid_ytd || 0;
+                const pendingAmount = statsResponse.pending_bills_total || 0;
+                const lastPaymentAmount = statsResponse.last_payment?.amount || 0;
+
+                setStats({
+                    totalPaid: parseFloat(totalPaid).toFixed(2),
+                    pendingAmount: parseFloat(pendingAmount).toFixed(2),
+                    lastPaymentAmount: parseFloat(lastPaymentAmount).toFixed(2),
+                });
+
+                // Process bills data
+                let bills = Array.isArray(billsResponse) ? billsResponse : billsResponse.results || [];
+                let payments = Array.isArray(paymentsResponse) ? paymentsResponse : paymentsResponse.results || [];
+
+                // Format recent payments
+                const sortedPayments = payments
+                    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                    .slice(0, 5)
+                    .map(p => ({
+                        id: p.id,
+                        transactionId: `TX-${String(p.id).padStart(5, '0')}`,
+                        type: p.bill?.service_type || p.bill?.service_type || 'Payment',
+                        amount: parseFloat(p.amount || 0).toLocaleString(),
+                        date: new Date(p.created_at).toLocaleDateString(),
+                        status: p.status,
+                        paidAt: p.paid_at ? new Date(p.paid_at).toLocaleDateString() : null,
+                    }));
+                setRecentPayments(sortedPayments);
+
+                // Format pending bills
+                const pendingBillsData = bills.filter(b => b.status !== 'PAID');
+                const formattedPendingBills = pendingBillsData.slice(0, 3).map(b => ({
+                    id: b.id,
+                    serviceType: b.service_type || 'Bill',
+                    amountDue: parseFloat(b.amount_due || 0),
+                    amountPaid: parseFloat(b.amount_paid || 0),
+                    dueDate: b.due_date ? new Date(b.due_date).toLocaleDateString() : 'No due date',
+                    status: b.status,
+                }));
+                setPendingBills(formattedPendingBills);
+
+                setError('');
+            } catch (err) {
+                console.error('Error fetching payment data:', err);
+                setError('Failed to load payment data');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Unable to load your payment information. Please try again.',
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    const handlePayBill = (bill) => {
+        const remaining = bill.amountDue - bill.amountPaid;
+        navigate('/citizen/payments/checkout', {
+            state: {
+                type: bill.serviceType,
+                amount: remaining,
+                billId: bill.id,
+            }
+        });
+    };
+
+    const handleViewAll = () => {
+        navigate('/citizen/payments/history');
+    };
+
+    if (loading) {
+        return (
+            <div className="p-8 flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <FaSpinner className="animate-spin text-5xl text-primary mx-auto mb-4" />
+                    <p className="text-gray-600">Loading your payment information...</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="p-8">
@@ -32,69 +131,104 @@ const PaymentDashboard = () => {
 
             {/* KPI Cards */}
             <div className="grid md:grid-cols-3 gap-6 mb-8">
-                {stats.map((stat, index) => (
-                    <Card key={index} className="p-6 flex items-center gap-4">
-                        <div className={`p-4 rounded-full ${stat.bg} ${stat.color} text-2xl`}>
-                            <stat.icon />
-                        </div>
-                        <div>
-                            <p className="text-gray-500 text-sm font-medium">{stat.label}</p>
-                            <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
-                        </div>
-                    </Card>
-                ))}
+                <Card className="p-6 flex items-center gap-4">
+                    <div className="p-4 rounded-full bg-green-100 text-green-600 text-2xl">
+                        <FaMoneyBillWave />
+                    </div>
+                    <div>
+                        <p className="text-gray-500 text-sm font-medium">Total Paid (YTD)</p>
+                        <h3 className="text-2xl font-bold text-gray-900">Le {stats.totalPaid}</h3>
+                    </div>
+                </Card>
+
+                <Card className="p-6 flex items-center gap-4">
+                    <div className="p-4 rounded-full bg-red-100 text-red-600 text-2xl">
+                        <FaExclamationCircle />
+                    </div>
+                    <div>
+                        <p className="text-gray-500 text-sm font-medium">Pending Bills</p>
+                        <h3 className="text-2xl font-bold text-gray-900">Le {stats.pendingAmount}</h3>
+                    </div>
+                </Card>
+
+                <Card className="p-6 flex items-center gap-4">
+                    <div className="p-4 rounded-full bg-blue-100 text-blue-600 text-2xl">
+                        <FaHistory />
+                    </div>
+                    <div>
+                        <p className="text-gray-500 text-sm font-medium">Last Payment</p>
+                        <h3 className="text-2xl font-bold text-gray-900">Le {stats.lastPaymentAmount}</h3>
+                    </div>
+                </Card>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
                 {/* Quick Actions */}
                 <div className="lg:col-span-2 space-y-8">
-                    <Card className="p-6">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4">Pending Bills</h3>
-                        <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg flex justify-between items-center">
-                            <div>
-                                <h4 className="font-bold text-yellow-800">Property Tax - Q4 2023</h4>
-                                <p className="text-sm text-yellow-700">Due: 31st Dec 2023</p>
+                    {/* Pending Bills */}
+                    {pendingBills.length > 0 && (
+                        <Card className="p-6">
+                            <h3 className="text-lg font-bold text-gray-900 mb-4">Pending Bills</h3>
+                            <div className="space-y-3">
+                                {pendingBills.map((bill) => (
+                                    <div key={bill.id} className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg flex justify-between items-center">
+                                        <div>
+                                            <h4 className="font-bold text-yellow-800">{bill.serviceType}</h4>
+                                            <p className="text-sm text-yellow-700">Due: {bill.dueDate}</p>
+                                            <p className="text-xs text-yellow-600 mt-1">Remaining: Le {(bill.amountDue - bill.amountPaid).toLocaleString()}</p>
+                                        </div>
+                                        <Button size="sm" onClick={() => handlePayBill(bill)}>
+                                            Pay Now
+                                        </Button>
+                                    </div>
+                                ))}
                             </div>
-                            <Button size="sm" onClick={() => navigate('/citizen/payments/checkout', { state: { type: 'Property Tax', amount: 250000 } })}>Pay Now (Le 250k)</Button>
-                        </div>
-                    </Card>
+                        </Card>
+                    )}
 
                     <Card className="p-6">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-lg font-bold text-gray-900">Recent Transactions</h3>
-                            <button onClick={() => navigate('/citizen/payments/history')} className="text-primary text-sm font-medium hover:underline flex items-center gap-1">
+                            <button onClick={handleViewAll} className="text-primary text-sm font-medium hover:underline flex items-center gap-1">
                                 View All <FaArrowRight />
                             </button>
                         </div>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">ID</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Service</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Amount</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Date</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {recentPayments.map((tx, i) => (
-                                        <tr key={i} className="hover:bg-gray-50">
-                                            <td className="p-3 text-sm font-medium text-gray-900">#{tx.id}</td>
-                                            <td className="p-3 text-sm text-gray-600">{tx.type}</td>
-                                            <td className="p-3 text-sm font-bold text-gray-900">{tx.amount}</td>
-                                            <td className="p-3 text-sm text-gray-500">{tx.date}</td>
-                                            <td className="p-3">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${tx.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-                                                    }`}>
-                                                    {tx.status}
-                                                </span>
-                                            </td>
+                        {recentPayments.length > 0 ? (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">ID</th>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Service</th>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Amount</th>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Date</th>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Status</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {recentPayments.map((tx) => (
+                                            <tr key={tx.id} className="hover:bg-gray-50">
+                                                <td className="p-3 text-sm font-medium text-gray-900">#{tx.transactionId}</td>
+                                                <td className="p-3 text-sm text-gray-600">{tx.type}</td>
+                                                <td className="p-3 text-sm font-bold text-gray-900">Le {tx.amount}</td>
+                                                <td className="p-3 text-sm text-gray-500">{tx.date}</td>
+                                                <td className="p-3">
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${
+                                                        tx.status === 'PAID' ? 'bg-green-100 text-green-700' : 
+                                                        tx.status === 'FAILED' ? 'bg-red-100 text-red-700' : 
+                                                        'bg-yellow-100 text-yellow-700'
+                                                    }`}>
+                                                        {tx.status}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <p className="text-gray-500 text-center py-8">No recent transactions yet.</p>
+                        )}
                     </Card>
                 </div>
 

@@ -1,7 +1,8 @@
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
 import { useAuth } from '../../context/AuthContext';
 import { ROLES } from '../../utils/constants';
 import Button from '../../components/UI/Button';
@@ -15,6 +16,7 @@ import Swal from 'sweetalert2';
 const CitizenLogin = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
 
     const formik = useFormik({
         initialValues: {
@@ -90,13 +92,22 @@ const CitizenLogin = () => {
                         <Input
                             id="password"
                             name="password"
-                            type="password"
+                            type={showPassword ? "text" : "password"}
                             label="Password"
                             placeholder="••••••••"
                             value={formik.values.password}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             error={formik.touched.password && formik.errors.password}
+                            rightElement={
+                                <button
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="text-gray-400 hover:text-gray-600 focus:outline-none flex items-center justify-center p-1"
+                                >
+                                    {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                                </button>
+                            }
                         />
                     </div>
 

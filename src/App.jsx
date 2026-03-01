@@ -38,6 +38,13 @@ import ApplyPermit from './pages/Citizen/Permits/ApplyPermit';
 import PermitDetails from './pages/Citizen/Permits/PermitDetails';
 import Notifications from './pages/Citizen/Notifications';
 
+// Import Pages (Payments - Global Callbacks)
+import LocalTaxSuccess from './pages/Citizen/Payments/LocalTaxSuccess';
+import LocalTaxCancel from './pages/Citizen/Payments/LocalTaxCancel';
+import CityRateSuccess from './pages/Citizen/Payments/CityRateSuccess';
+import WasteCollectionSuccess from './pages/Citizen/Payments/WasteCollectionSuccess';
+import WasteCollectionCancel from './pages/Citizen/Payments/WasteCollectionCancel';
+
 // Import Pages (Admin)
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import Complaints from './pages/Admin/AdminComplaintList';
@@ -119,6 +126,13 @@ function App() {
         <Route path="/auth/login" element={<CitizenLogin />} />
         <Route path="/auth/register" element={<CitizenRegister />} />
         <Route path="/auth/staff-login" element={<PublicLayout><StaffLogin /></PublicLayout>} />
+
+        {/* Global Payment Callbacks */}
+        <Route path="/payments/local-tax/success" element={<LocalTaxSuccess />} />
+        <Route path="/payments/local-tax/cancel" element={<LocalTaxCancel />} />
+        <Route path="/payments/city-rate/success" element={<CityRateSuccess />} />
+        <Route path="/payments/waste/success" element={<WasteCollectionSuccess />} />
+        <Route path="/payments/waste/cancel" element={<WasteCollectionCancel />} />
 
         {/* Citizen Routes */}
         <Route path="/citizen/*" element={

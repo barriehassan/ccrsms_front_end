@@ -15,7 +15,6 @@ const SidebarCitizen = ({ isCollapsed, toggleSidebar }) => {
         { path: '/citizen/complaints', label: 'My Complaints', icon: FaList },
         { path: '/citizen/payments', label: 'Payments', icon: FaMoneyBillWave },
         { path: '/citizen/permits', label: 'Licenses & Permits', icon: FaFileContract },
-        { path: '/citizen/notifications', label: 'Notifications', icon: FaBell },
         { path: '/citizen/profile', label: 'Profile', icon: FaUser },
     ];
 

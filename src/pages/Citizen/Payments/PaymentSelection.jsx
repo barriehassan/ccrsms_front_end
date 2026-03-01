@@ -8,43 +8,47 @@ const PaymentSelection = () => {
 
     const paymentTypes = [
         {
-            id: 'city-rates',
-            title: 'City Rates / Property Tax',
+            id: 'local-tax',
+            title: 'Local Tax',
             icon: FaHome,
-            desc: 'Annual property tax for residential and commercial buildings.',
-            color: 'blue'
+            desc: 'Annual local tax for residents in freetown over the age of 18.',
+            color: 'blue',
+            type: 'LOCAL_TAX'
+        },
+        {
+            id: 'city-rate',
+            title: 'City Rate',
+            icon: FaStore,
+            desc: 'Property or business city rate fees with flexible installment payment options.',
+            color: 'orange',
+            type: 'CITY_RATE'
         },
         {
             id: 'waste',
             title: 'Waste Collection',
             icon: FaTrashAlt,
-            desc: 'Monthly fees for municipal waste collection services.',
-            color: 'green'
-        },
-        {
-            id: 'market',
-            title: 'Market Dues',
-            icon: FaStore,
-            desc: 'Daily or monthly dues for registered market stall holders.',
-            color: 'orange'
+            desc: 'Subscription fees for municipal waste collection services.',
+            color: 'green',
+            type: 'WASTE_COLLECTION'
         },
         {
             id: 'license',
             title: 'Business License',
             icon: FaBriefcase,
             desc: 'Annual operating license fees for local businesses.',
-            color: 'purple'
+            color: 'purple',
+            type: 'BUSINESS_LICENSE'
         },
     ];
 
     const handleSelect = (type) => {
-        navigate('/citizen/payments/checkout', { state: { type: type.title } });
+        navigate('/citizen/payments/checkout', { state: { type: type.type, title: type.title } });
     };
 
     return (
         <div className="p-8">
             <header className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Select Payment Type</h1>
+                <h1 className="text-3xl font-bold text-gray-900">Select Service Type</h1>
                 <p className="text-gray-500">Choose a category to proceed with your payment.</p>
             </header>
 
