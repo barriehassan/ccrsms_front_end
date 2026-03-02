@@ -36,6 +36,10 @@ import PaymentSuccess from './pages/Citizen/Payments/PaymentSuccess';
 import PermitDashboard from './pages/Citizen/Permits/PermitDashboard';
 import ApplyPermit from './pages/Citizen/Permits/ApplyPermit';
 import PermitDetails from './pages/Citizen/Permits/PermitDetails';
+import LicenseDetails from './pages/Citizen/Permits/LicenseDetails';
+import BusinessDashboard from './pages/Citizen/Permits/BusinessDashboard';
+import CreateBusiness from './pages/Citizen/Permits/CreateBusiness';
+import CreateLicenseRequest from './pages/Citizen/Permits/CreateLicenseRequest';
 import Notifications from './pages/Citizen/Notifications';
 
 // Import Pages (Payments - Global Callbacks)
@@ -44,6 +48,7 @@ import LocalTaxCancel from './pages/Citizen/Payments/LocalTaxCancel';
 import CityRateSuccess from './pages/Citizen/Payments/CityRateSuccess';
 import WasteCollectionSuccess from './pages/Citizen/Payments/WasteCollectionSuccess';
 import WasteCollectionCancel from './pages/Citizen/Payments/WasteCollectionCancel';
+import BusinessLicenseSuccess from './pages/Citizen/Payments/BusinessLicenseSuccess';
 
 // Import Pages (Admin)
 import AdminDashboard from './pages/Admin/AdminDashboard';
@@ -133,6 +138,7 @@ function App() {
         <Route path="/payments/city-rate/success" element={<CityRateSuccess />} />
         <Route path="/payments/waste/success" element={<WasteCollectionSuccess />} />
         <Route path="/payments/waste/cancel" element={<WasteCollectionCancel />} />
+        <Route path="/payments/business-license/success" element={<BusinessLicenseSuccess />} />
 
         {/* Citizen Routes */}
         <Route path="/citizen/*" element={
@@ -153,6 +159,11 @@ function App() {
           <Route path="payments/success" element={<PaymentSuccess />} />
           <Route path="permits" element={<PermitDashboard />} />
           <Route path="permits/apply" element={<ApplyPermit />} />
+          <Route path="permits/license/:noticeId" element={<LicenseDetails />} />
+          <Route path="permits/license-request" element={<CreateLicenseRequest />} />
+          <Route path="permits/businesses" element={<BusinessDashboard />} />
+          <Route path="permits/business/create" element={<CreateBusiness />} />
+          <Route path="permits/business/:businessId/edit" element={<CreateBusiness />} />
           <Route path="permits/:id" element={<PermitDetails />} />
           <Route path="notifications" element={<Notifications />} />
         </Route>

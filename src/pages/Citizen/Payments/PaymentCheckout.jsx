@@ -5,12 +5,12 @@ import Swal from 'sweetalert2';
 import Card from '../../../components/UI/Card';
 import Button from '../../../components/UI/Button';
 import Input from '../../../components/UI/Input';
-import { checkoutLocalTax, checkoutCityRate, getWastePlans, checkoutWasteCollection } from '../../../services/paymentService';
+import { checkoutLocalTax, checkoutCityRate, getWastePlans, checkoutWasteCollection, getUserBusinessLicenseNotices, checkoutBusinessLicense } from '../../../services/paymentService';
 
 const PaymentCheckout = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { type, title = 'General Payment', amount: initialAmount } = location.state || { type: 'General Payment', amount: 0 };
+    const { type, title = 'General Payment', amount: initialAmount, noticeId: initialNoticeId } = location.state || { type: 'General Payment', amount: 0 };
 
     const [amount, setAmount] = useState(initialAmount || '');
     const [processing, setProcessing] = useState(false);
@@ -18,6 +18,11 @@ const PaymentCheckout = () => {
     const [wastePlans, setWastePlans] = useState([]);
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [plansLoading, setPlansLoading] = useState(false);
+    
+    // Business License states
+    const [businessLicenseNotices, setBusinessLicenseNotices] = useState([]);
+    const [selectedNotice, setSelectedNotice] = useState(null);
+    const [noticesLoading, setNoticesLoading] = useState(false);
 
     useEffect(() => {
         if (!location.state) {
@@ -50,12 +55,49 @@ const PaymentCheckout = () => {
             };
             fetchPlans();
         }
-    }, [location, type]);
+
+        // Fetch business license demand notices if business license is selected
+        if (type === 'BUSINESS_LICENSE') {
+            const fetchNotices = async () => {
+                setNoticesLoading(true);
+                try {
+                    const notices = await getUserBusinessLicenseNotices();
+                    const verifiedNotices = Array.isArray(notices) 
+                        ? notices.filter(n => n.status === 'VERIFIED')
+                        : [];
+                    setBusinessLicenseNotices(verifiedNotices);
+                    
+                    // Auto-select if only one notice or if initialNoticeId was provided
+                    if (initialNoticeId) {
+                        const notice = verifiedNotices.find(n => n.id === initialNoticeId);
+                        if (notice) {
+                            setSelectedNotice(notice);
+                            setAmount(notice.amount_due);
+                        }
+                    } else if (verifiedNotices.length === 1) {
+                        setSelectedNotice(verifiedNotices[0]);
+                        setAmount(verifiedNotices[0].amount_due);
+                    }
+                } catch (error) {
+                    console.error("Error fetching business license notices:", error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to load business license demand notices. Please ensure you have verified notices.',
+                        confirmButtonColor: '#0958d9'
+                    });
+                } finally {
+                    setNoticesLoading(false);
+                }
+            };
+            fetchNotices();
+        }
+    }, [location, type, initialNoticeId]);
 
     const handlePay = async (e) => {
         e.preventDefault();
 
-        if (type === 'LOCAL_TAX' || type === 'CITY_RATE' || type === 'WASTE_COLLECTION') {
+        if (type === 'LOCAL_TAX' || type === 'CITY_RATE' || type === 'WASTE_COLLECTION' || type === 'BUSINESS_LICENSE') {
             return handleStripeCheckout();
         }
 
@@ -108,6 +150,13 @@ const PaymentCheckout = () => {
                     throw new Error("Please select a waste collection plan.");
                 }
                 result = await checkoutWasteCollection(selectedPlan.id);
+            } else if (type === 'BUSINESS_LICENSE') {
+                if (!selectedNotice) {
+                    throw new Error("Please select a demand notice to pay.");
+                }
+                // Store notice ID for later retrieval on success page
+                sessionStorage.setItem('businessLicenseNoticeId', selectedNotice.id);
+                result = await checkoutBusinessLicense(selectedNotice.id);
             }
             
             if (result.checkout_url) {
@@ -231,6 +280,55 @@ const PaymentCheckout = () => {
                                 </div>
                             )}
 
+                            {type === 'BUSINESS_LICENSE' && (
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700 mb-3">Select Demand Notice to Pay</label>
+                                        {noticesLoading ? (
+                                            <div className="text-center py-6 text-gray-500">Loading your demand notices...</div>
+                                        ) : businessLicenseNotices.length > 0 ? (
+                                            <div className="space-y-2">
+                                                {businessLicenseNotices.map((notice) => (
+                                                    <div
+                                                        key={notice.id}
+                                                        onClick={() => {
+                                                            setSelectedNotice(notice);
+                                                            setAmount(notice.amount_due);
+                                                        }}
+                                                        className={`border-2 p-4 rounded-lg cursor-pointer transition-all ${
+                                                            selectedNotice?.id === notice.id
+                                                                ? 'border-primary bg-blue-50'
+                                                                : 'border-gray-200 hover:border-primary'
+                                                        }`}
+                                                    >
+                                                        <div className="flex items-start justify-between mb-2">
+                                                            <div className="flex-1">
+                                                                <h4 className="font-bold text-gray-900">{notice.business_name}</h4>
+                                                                <p className="text-xs text-gray-500 mt-1">Notice: {notice.notice_number} | Year: {notice.license_year}</p>
+                                                            </div>
+                                                            {selectedNotice?.id === notice.id && (
+                                                                <FaCheck className="text-primary mt-1 ml-2" />
+                                                            )}
+                                                        </div>
+                                                        <div className="flex justify-between items-center">
+                                                            <span className="text-gray-600">Amount Due:</span>
+                                                            <span className="text-2xl font-bold text-primary">
+                                                                Le {Number(notice.amount_due).toLocaleString()}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-6 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                                <p className="text-sm text-yellow-700">No verified demand notices found.</p>
+                                                <p className="text-xs text-yellow-600 mt-1">Please register a business and submit your details for verification first.</p>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                             {type !== 'LOCAL_TAX' && type !== 'CITY_RATE' && type !== 'WASTE_COLLECTION' && (
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">Payment Amount (Le)</label>
@@ -245,7 +343,7 @@ const PaymentCheckout = () => {
                                 </div>
                             )}
 
-                            {type !== 'LOCAL_TAX' && type !== 'CITY_RATE' && type !== 'WASTE_COLLECTION' && (
+                            {type !== 'LOCAL_TAX' && type !== 'CITY_RATE' && type !== 'WASTE_COLLECTION' && type !== 'BUSINESS_LICENSE' && (
                                 <>
                                     <div>
                                         <h4 className="font-medium text-gray-900 mb-4">Select Method</h4>
@@ -272,8 +370,8 @@ const PaymentCheckout = () => {
                                 </>
                             )}
 
-                            <Button type="submit" className="w-full py-4 text-lg" disabled={processing || (type === 'CITY_RATE' && !amount) || (type === 'WASTE_COLLECTION' && !selectedPlan) || (type !== 'LOCAL_TAX' && type !== 'CITY_RATE' && type !== 'WASTE_COLLECTION' && !amount)}>
-                                {(type === 'LOCAL_TAX' || type === 'CITY_RATE' || type === 'WASTE_COLLECTION') ? 'Proceed to Secure Stripe Checkout' : `Pay Le ${Number(amount || 0).toLocaleString()}`}
+                            <Button type="submit" className="w-full py-4 text-lg" disabled={processing || (type === 'CITY_RATE' && !amount) || (type === 'WASTE_COLLECTION' && !selectedPlan) || (type === 'BUSINESS_LICENSE' && !selectedNotice) || (type !== 'LOCAL_TAX' && type !== 'CITY_RATE' && type !== 'WASTE_COLLECTION' && type !== 'BUSINESS_LICENSE' && !amount)}>
+                                {(type === 'LOCAL_TAX' || type === 'CITY_RATE' || type === 'WASTE_COLLECTION' || type === 'BUSINESS_LICENSE') ? 'Proceed to Secure Stripe Checkout' : `Pay Le ${Number(amount || 0).toLocaleString()}`}
                             </Button>
                         </form>
                     </Card>
@@ -334,6 +432,30 @@ const PaymentCheckout = () => {
                                     </div>
                                 </>
                             )}
+                            {type === 'BUSINESS_LICENSE' && selectedNotice && (
+                                <>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-600">Business</span>
+                                        <span className="font-medium">{selectedNotice.business_name}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-600">License Year</span>
+                                        <span className="font-medium">{selectedNotice.license_year}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-600">Notice Number</span>
+                                        <span className="font-medium">{selectedNotice.notice_number}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-600">License Fee</span>
+                                        <span className="font-medium">Le {Number(selectedNotice.amount_due).toLocaleString()}</span>
+                                    </div>
+                                    <div className="flex justify-between text-sm">
+                                        <span className="text-gray-600">Processing</span>
+                                        <span className="font-medium">Le 0.00</span>
+                                    </div>
+                                </>
+                            )}
                             {type !== 'LOCAL_TAX' && type !== 'CITY_RATE' && type !== 'WASTE_COLLECTION' && (
                                 <>
                                     <div className="flex justify-between text-sm">
@@ -350,7 +472,7 @@ const PaymentCheckout = () => {
                         <div className="flex justify-between items-center pt-4">
                             <span className="font-bold text-lg text-gray-900">Total Payment</span>
                             <span className="font-bold text-xl text-primary">
-                                Le {type === 'LOCAL_TAX' ? '10.00' : type === 'WASTE_COLLECTION' && selectedPlan ? Number(selectedPlan.price).toLocaleString() : Number(amount || 0).toLocaleString()}
+                                Le {type === 'LOCAL_TAX' ? '10.00' : type === 'WASTE_COLLECTION' && selectedPlan ? Number(selectedPlan.price).toLocaleString() : type === 'BUSINESS_LICENSE' && selectedNotice ? Number(selectedNotice.amount_due).toLocaleString() : Number(amount || 0).toLocaleString()}
                             </span>
                         </div>
                     </Card>

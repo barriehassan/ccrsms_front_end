@@ -107,3 +107,66 @@ export const verifyWasteCollectionPayment = async (sessionId) => {
     const response = await axiosInstance.get(`billing/waste-collection/verify/?session_id=${sessionId}`);
     return response.data; // { payment, coverage }
 };
+
+// ===== BUSINESS LICENSE PAYMENT FLOW =====
+
+// Get all business records for current user
+export const getUserBusinesses = async () => {
+    const response = await axiosInstance.get('billing/citizens/businesses/');
+    return response.data; // List of Business objects
+};
+
+// Create a new business for the current user
+export const createBusiness = async (businessData) => {
+    const response = await axiosInstance.post('billing/citizens/businesses/', businessData);
+    return response.data; // Created Business object
+};
+
+// Get specific business details
+export const getBusinessDetail = async (businessId) => {
+    const response = await axiosInstance.get(`billing/citizens/businesses/${businessId}/`);
+    return response.data;
+};
+
+// Update a business
+export const updateBusiness = async (businessId, businessData) => {
+    const response = await axiosInstance.patch(`billing/citizens/businesses/${businessId}/`, businessData);
+    return response.data;
+};
+
+// Delete a business
+export const deleteBusiness = async (businessId) => {
+    const response = await axiosInstance.delete(`billing/citizens/businesses/${businessId}/`);
+    return response.data;
+};
+
+// Get all business license demand notices for current user
+export const getUserBusinessLicenseNotices = async () => {
+    const response = await axiosInstance.get('billing/citizens/business-license/notices/');
+    return response.data; // List of BusinessLicenseDemandNotice objects
+};
+
+// Create a new business license demand notice (request)
+export const createBusinessLicenseNotice = async (noticeData) => {
+    const response = await axiosInstance.post('billing/citizens/business-license/notices/', noticeData);
+    return response.data; // Created BusinessLicenseDemandNotice object
+};
+
+// Get specific demand notice details
+export const getBusinessLicenseNoticeDetail = async (noticeId) => {
+    const response = await axiosInstance.get(`billing/citizens/business-license/notices/${noticeId}/`);
+    return response.data;
+};
+
+// Initiate Business License payment checkout
+export const checkoutBusinessLicense = async (noticeId) => {
+    const payload = { notice_id: noticeId };
+    const response = await axiosInstance.post('billing/business-license/payment/checkout/', payload);
+    return response.data; // { checkout_url, session_id }
+};
+
+// Verify Business License payment session after Stripe redirect
+export const verifyBusinessLicensePayment = async (sessionId) => {
+    const response = await axiosInstance.get(`billing/business-license/payment/verify/?session_id=${sessionId}`);
+    return response.data; // The Payment data object from backend
+};

@@ -1,36 +1,100 @@
 import { useNavigate } from 'react-router-dom';
-import { FaFileContract, FaPlusCircle, FaSearch, FaHistory, FaCheckCircle, FaClock, FaTimesCircle, FaEye } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { FaFileContract, FaPlusCircle, FaSearch, FaHistory, FaCheckCircle, FaClock, FaTimesCircle, FaEye, FaSpinner } from 'react-icons/fa';
 import Card from '../../../components/UI/Card';
 import Button from '../../../components/UI/Button';
 import Input from '../../../components/UI/Input';
+import { getUserBusinessLicenseNotices } from '../../../services/paymentService';
+import Swal from 'sweetalert2';
 
 const PermitDashboard = () => {
     const navigate = useNavigate();
+    
+    const [demandNotices, setDemandNotices] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [searchTerm, setSearchTerm] = useState('');
+
+    useEffect(() => {
+        const fetchNotices = async () => {
+            try {
+                setLoading(true);
+                const notices = await getUserBusinessLicenseNotices();
+                const noticesArray = Array.isArray(notices) ? notices : [];
+                setDemandNotices(noticesArray);
+                setError('');
+            } catch (err) {
+                console.error('Error fetching business license notices:', err);
+                setError('Failed to load business licenses');
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Info',
+                    text: 'You do not have any business licenses yet. Register a business to get started.',
+                    confirmButtonColor: '#0958d9'
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchNotices();
+    }, []);
+
+    // Calculate stats
+    const verifiedNotices = demandNotices.filter(n => n.status === 'VERIFIED');
+    const paidNotices = demandNotices.filter(n => n.status === 'PAID');
+    const submittedNotices = demandNotices.filter(n => n.status === 'SUBMITTED');
 
     const stats = [
-        { label: "Active Permits", value: "2", icon: FaFileContract, color: "text-green-600", bg: "bg-green-100" },
-        { label: "Pending Applications", value: "1", icon: FaClock, color: "text-yellow-600", bg: "bg-yellow-100" },
-        { label: "Expiring Soon", value: "0", icon: FaHistory, color: "text-red-600", bg: "bg-red-100" },
+        { label: "Active Licenses", value: paidNotices.length, icon: FaFileContract, color: "text-green-600", bg: "bg-green-100" },
+        { label: "Pending Verification", value: submittedNotices.length, icon: FaClock, color: "text-yellow-600", bg: "bg-yellow-100" },
+        { label: "Verified & Ready", value: verifiedNotices.length, icon: FaCheckCircle, color: "text-blue-600", bg: "bg-blue-100" },
     ];
 
-    const permits = [
-        { id: "PMT-2023-001", type: "Business License", businessName: "Krio Kitchen", status: "Active", expiry: "31 Dec 2024" },
-        { id: "PMT-2023-089", type: "Market Stall Permit", businessName: "Stall #45 - Central Market", status: "Expiring Soon", expiry: "15 Jan 2024" },
-    ];
-
-    const applications = [
-        { id: "APP-2023-112", type: "Construction Permit", date: "10 Dec 2023", status: "Under Review" },
-        { id: "APP-2023-055", type: "Liquor License", date: "01 Nov 2023", status: "Rejected" },
-    ];
+    // Filter notices based on search
+    const filteredNotices = demandNotices.filter(notice =>
+        notice.business_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        notice.notice_number?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 'Active': return 'bg-green-100 text-green-700';
-            case 'Expiring Soon': return 'bg-yellow-100 text-yellow-700';
-            case 'Under Review': return 'bg-blue-100 text-blue-700';
-            case 'Rejected': return 'bg-red-100 text-red-700';
+            case 'PAID': return 'bg-green-100 text-green-700';
+            case 'VERIFIED': return 'bg-blue-100 text-blue-700';
+            case 'SUBMITTED': return 'bg-yellow-100 text-yellow-700';
+            case 'REJECTED': return 'bg-red-100 text-red-700';
             default: return 'bg-gray-100 text-gray-700';
         }
+    };
+
+    const getStatusLabel = (status) => {
+        const labels = {
+            'PAID': 'Active',
+            'VERIFIED': 'Verified & Ready',
+            'SUBMITTED': 'Under Review',
+            'REJECTED': 'Rejected'
+        };
+        return labels[status] || status;
+    };
+
+    const handlePayment = (notice) => {
+        if (notice.status !== 'VERIFIED') {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Cannot Pay',
+                text: 'Your demand notice must be verified before payment.',
+                confirmButtonColor: '#0958d9'
+            });
+            return;
+        }
+        
+        navigate('/citizen/payments/checkout', {
+            state: {
+                type: 'BUSINESS_LICENSE',
+                title: 'Business License',
+                noticeId: notice.id
+            }
+        });
     };
 
     return (
@@ -40,9 +104,14 @@ const PermitDashboard = () => {
                     <h1 className="text-3xl font-bold text-gray-900">Licenses & Permits</h1>
                     <p className="text-gray-500">Manage your business licenses and municipal permits.</p>
                 </div>
-                <Button onClick={() => navigate('/citizen/permits/apply')} className="flex items-center gap-2">
-                    <FaPlusCircle /> Apply for New Permit
-                </Button>
+                <div className="flex gap-3 flex-wrap">
+                    <Button onClick={() => navigate('/citizen/permits/business/create')} variant="outline" className="flex items-center gap-2">
+                        <FaPlusCircle /> Register Business
+                    </Button>
+                    <Button onClick={() => navigate('/citizen/permits/license-request')} className="flex items-center gap-2">
+                        <FaFileContract /> Request License
+                    </Button>
+                </div>
             </header>
 
             {/* Stats Overview */}
@@ -66,81 +135,103 @@ const PermitDashboard = () => {
                     <Card className="p-6">
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                <FaFileContract className="text-primary" /> My Active Permits
+                                <FaFileContract className="text-primary" /> My Business Licenses
                             </h3>
                             <div className="md:w-64">
-                                <Input placeholder="Search permits..." icon={FaSearch} />
+                                <Input 
+                                    placeholder="Search licenses..." 
+                                    icon={FaSearch}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                />
                             </div>
                         </div>
 
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Permit ID</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Type</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Entity</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Expiry</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {permits.map((permit) => (
-                                        <tr key={permit.id} className="hover:bg-gray-50">
-                                            <td className="p-3 text-sm font-medium text-gray-900">{permit.id}</td>
-                                            <td className="p-3 text-sm text-gray-600">{permit.type}</td>
-                                            <td className="p-3 text-sm text-gray-500">{permit.businessName}</td>
-                                            <td className="p-3 text-sm text-gray-500">{permit.expiry}</td>
-                                            <td className="p-3">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${getStatusColor(permit.status)}`}>
-                                                    {permit.status}
-                                                </span>
-                                            </td>
-                                            <td className="p-3">
-                                                <Button variant="outline" size="sm" onClick={() => navigate(`/citizen/permits/${permit.id}`)}>
-                                                    View
-                                                </Button>
-                                            </td>
+                        {loading ? (
+                            <div className="text-center py-8 text-gray-500">
+                                <FaSpinner className="inline text-3xl animate-spin mb-3" />
+                                <p>Loading your business licenses...</p>
+                            </div>
+                        ) : filteredNotices.length > 0 ? (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left">
+                                    <thead className="bg-gray-50">
+                                        <tr>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Notice ID</th>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Business</th>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Year</th>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Amount Due</th>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Status</th>
+                                            <th className="p-3 text-xs font-medium text-gray-500 uppercase">Action</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-100">
+                                        {filteredNotices.map((notice) => (
+                                            <tr key={notice.id} className="hover:bg-gray-50">
+                                                <td className="p-3 text-sm font-medium text-gray-900">{notice.notice_number}</td>
+                                                <td className="p-3 text-sm text-gray-600">{notice.business_name}</td>
+                                                <td className="p-3 text-sm text-gray-500">{notice.license_year}</td>
+                                                <td className="p-3 text-sm font-medium text-gray-900">Le {Number(notice.amount_due).toLocaleString()}</td>
+                                                <td className="p-3">
+                                                    <span className={`px-2 py-1 rounded-full text-xs font-bold ${getStatusColor(notice.status)}`}>
+                                                        {getStatusLabel(notice.status)}
+                                                    </span>
+                                                </td>
+                                                <td className="p-3">
+                                                    {notice.status === 'VERIFIED' ? (
+                                                        <Button 
+                                                            variant="outline" 
+                                                            size="sm"
+                                                            onClick={() => handlePayment(notice)}
+                                                        >
+                                                            Pay Now
+                                                        </Button>
+                                                    ) : (
+                                                        <Button 
+                                                            variant="outline" 
+                                                            size="sm"
+                                                            onClick={() => navigate(`/citizen/permits/license/${notice.id}`)}
+                                                        >
+                                                            View
+                                                        </Button>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ) : (
+                            <div className="text-center py-8 bg-gray-50 rounded-lg">
+                                <FaFileContract className="text-4xl text-gray-300 mx-auto mb-3" />
+                                <p className="text-gray-600 mb-4">No business licenses found</p>
+                                <Button onClick={() => navigate('/citizen/permits/business/create')}>Register a Business</Button>
+                            </div>
+                        )}
                     </Card>
 
                     {/* Recent Applications */}
-                    <Card className="p-6">
-                        <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                            <FaHistory className="text-gray-400" /> Recent Applications
-                        </h3>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-left">
-                                <thead className="bg-gray-50">
-                                    <tr>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">App ID</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Type</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Date Submitted</th>
-                                        <th className="p-3 text-xs font-medium text-gray-500 uppercase">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {applications.map((app) => (
-                                        <tr key={app.id} className="hover:bg-gray-50">
-                                            <td className="p-3 text-sm font-medium text-gray-900">{app.id}</td>
-                                            <td className="p-3 text-sm text-gray-600">{app.type}</td>
-                                            <td className="p-3 text-sm text-gray-500">{app.date}</td>
-                                            <td className="p-3">
-                                                <span className={`px-2 py-1 rounded-full text-xs font-bold ${getStatusColor(app.status)}`}>
-                                                    {app.status}
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </Card>
+                    {demandNotices.length > 0 && (
+                        <Card className="p-6">
+                            <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <FaHistory className="text-gray-400" /> License Status Overview
+                            </h3>
+                            <div className="grid grid-cols-3 gap-4 text-center">
+                                <div className="p-4 bg-blue-50 rounded-lg">
+                                    <p className="text-2xl font-bold text-blue-600">{submittedNotices.length}</p>
+                                    <p className="text-xs text-gray-600 mt-1">Pending Verification</p>
+                                </div>
+                                <div className="p-4 bg-yellow-50 rounded-lg">
+                                    <p className="text-2xl font-bold text-yellow-600">{verifiedNotices.length}</p>
+                                    <p className="text-xs text-gray-600 mt-1">Ready to Pay</p>
+                                </div>
+                                <div className="p-4 bg-green-50 rounded-lg">
+                                    <p className="text-2xl font-bold text-green-600">{paidNotices.length}</p>
+                                    <p className="text-xs text-gray-600 mt-1">Licenses Paid</p>
+                                </div>
+                            </div>
+                        </Card>
+                    )}
                 </div>
 
                 {/* Requirements Sidebar */}
