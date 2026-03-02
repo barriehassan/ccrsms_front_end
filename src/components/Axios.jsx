@@ -1,7 +1,9 @@
 import axios from 'axios'
 
 
-const baseUrl = 'https://fwkdn87g-8000.uks1.devtunnels.ms/'
+
+const baseUrl = 'http://172.20.10.3:8000/'
+
 
 const AxiosInstance = axios.create({
     baseURL: baseUrl,

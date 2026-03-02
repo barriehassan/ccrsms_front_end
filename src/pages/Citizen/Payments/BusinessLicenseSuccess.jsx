@@ -97,7 +97,7 @@ const BusinessLicenseSuccess = () => {
                 {status === 'verifying' && (
                     <>
                         <FaSpinner className="text-5xl text-primary mx-auto mb-4 animate-spin" />
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Verifying Payment</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Verifying Payment</h1>
                         <p className="text-gray-600 mb-6">Please wait while we confirm your business license payment with Stripe...</p>
                     </>
                 )}
@@ -105,7 +105,7 @@ const BusinessLicenseSuccess = () => {
                 {status === 'success' && (
                     <>
                         <FaCheckCircle className="text-5xl text-green-500 mx-auto mb-4" />
-                        <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment Successful!</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Payment Successful!</h1>
                         <p className="text-gray-600 mb-4">Your business license payment has been confirmed.</p>
                         
                         {paymentData && (

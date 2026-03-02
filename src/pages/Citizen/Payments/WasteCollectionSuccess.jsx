@@ -102,7 +102,7 @@ const WasteCollectionSuccess = () => {
                 {status === 'verifying' && (
                     <div className="flex flex-col items-center justify-center py-8">
                         <FaSpinner className="animate-spin text-5xl text-primary mb-6" />
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Verifying Payment...</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Verifying Payment...</h2>
                         <p className="text-gray-500">Please do not close this window.</p>
                     </div>
                 )}
@@ -112,7 +112,7 @@ const WasteCollectionSuccess = () => {
                         <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-green-500 text-4xl mb-6">
                             <FaCheckCircle />
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Coverage Activated!</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Coverage Activated!</h2>
                         <p className="text-gray-500 mb-2">Your waste collection coverage has been activated.</p>
                         {coverageData && (
                             <div className="bg-blue-50 p-3 rounded-lg w-full mb-6 text-left text-sm">

@@ -35,8 +35,8 @@ const Footer = () => {
                     <div>
                         <h4 className="text-lg font-semibold mb-4">Connect With Us</h4>
                         <div className="flex space-x-4">
-                            <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors"><FaFacebook /></a>
-                            <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors"><FaTwitter /></a>
+                            <a href="https://www.facebook.com/FreetownCityCouncil" className="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors"><FaFacebook /></a>
+                            <a href="https://x.com/FCC_Freetown" className="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors"><FaTwitter /></a>
                             <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors"><FaInstagram /></a>
                             <a href="#" className="bg-gray-800 p-2 rounded-full hover:bg-primary transition-colors"><FaLinkedin /></a>
                         </div>

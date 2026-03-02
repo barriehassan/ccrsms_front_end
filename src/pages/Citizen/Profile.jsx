@@ -43,7 +43,7 @@ const Profile = () => {
         <div className="p-8 max-w-5xl mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Profile</h1>
                     <p className="text-gray-600 mt-1">Manage your account information and settings</p>
                 </div>
                 {!editMode && (
@@ -67,7 +67,7 @@ const Profile = () => {
                         <div className="w-40 h-40 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full mx-auto mb-6 flex items-center justify-center text-5xl font-bold text-white shadow-lg">
                             {initials}
                         </div>
-                        <h2 className="text-2xl font-bold text-gray-900">{fullName || 'Citizen'}</h2>
+                        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-200">{fullName || 'Citizen'}</h2>
                         <p className="text-sm text-gray-500 mt-1 uppercase tracking-wider font-semibold capitalize">{user?.role || 'Citizen'}</p>
                         
                         <div className="mt-6 pt-6 border-t border-gray-200">
@@ -85,18 +85,18 @@ const Profile = () => {
                     </Card>
 
                     <Card>
-                        <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-200 mb-4 flex items-center gap-2">
                             <FaClock className="text-gray-400" />
                             Account Info
                         </h3>
                         <div className="space-y-3 text-sm">
                             <div>
                                 <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">Member Since</p>
-                                <p className="text-gray-900 font-semibold">{user?.date_joined ? new Date(user.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Not available'}</p>
+                                <p className="text-gray-900 dark:text-gray-200 font-semibold">{user?.date_joined ? new Date(user.date_joined).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'Not available'}</p>
                             </div>
                             <div>
                                 <p className="text-gray-500 text-xs uppercase tracking-wider mb-1">User ID</p>
-                                <p className="text-gray-900 font-semibold text-xs break-all">{user?.id || 'N/A'}</p>
+                                <p className="text-gray-900 dark:text-gray-200   font-semibold text-xs break-all">{user?.id || 'N/A'}</p>
                             </div>
                         </div>
                     </Card>
@@ -105,7 +105,7 @@ const Profile = () => {
                 {/* Main Content - Edit Form */}
                 <div className="md:col-span-2">
                     <Card>
-                        <h3 className="text-xl font-bold text-gray-900 mb-8 flex items-center gap-2">
+                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-200 mb-8 flex items-center gap-2">
                             <FaUser className="text-blue-600" />
                             Personal Information
                         </h3>
@@ -219,7 +219,7 @@ const Profile = () => {
 
                     {/* Additional Info Card */}
                     <Card className="mt-6">
-                        <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <h3 className="text-lg font-bold text-gray-900 dark:text-gray-200 mb-6 flex items-center gap-2">
                             {/* <FaShield className="text-blue-600" /> */}
                             Account Security
                         </h3>

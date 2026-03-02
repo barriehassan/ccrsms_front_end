@@ -184,7 +184,7 @@ const PaymentCheckout = () => {
     return (
         <div className="p-8">
             <header className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Checkout</h1>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Checkout</h1>
                 <p className="text-gray-500">Securely complete your payment for {title}.</p>
             </header>
 
@@ -216,7 +216,7 @@ const PaymentCheckout = () => {
                                             type="number"
                                             value={totalAmount}
                                             onChange={(e) => setTotalAmount(e.target.value)}
-                                            className="w-full text-2xl font-bold border-b-2 border-gray-300 focus:border-primary outline-none py-2 text-gray-900"
+                                            className="w-full text-2xl font-bold border-b-2 border-gray-300 focus:border-primary outline-none py-2 text-gray-900 dark:bg-gray-800 dark:text-white"
                                             placeholder="0.00"
                                             min="0"
                                             step="0.01"
@@ -229,7 +229,7 @@ const PaymentCheckout = () => {
                                             type="number"
                                             value={amount}
                                             onChange={(e) => setAmount(e.target.value)}
-                                            className="w-full text-2xl font-bold border-b-2 border-gray-300 focus:border-primary outline-none py-2 text-gray-900"
+                                            className="w-full text-2xl font-bold border-b-2 border-gray-300 focus:border-primary outline-none py-2 text-gray-900 dark:bg-gray-800 dark:text-white"
                                             placeholder="0.00"
                                             required
                                             min="0"
@@ -243,7 +243,7 @@ const PaymentCheckout = () => {
                             {type === 'WASTE_COLLECTION' && (
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-3">Select Waste Collection Plan</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Select Waste Collection Plan</label>
                                         {plansLoading ? (
                                             <div className="text-center py-6 text-gray-500">Loading plans...</div>
                                         ) : wastePlans.length > 0 ? (
@@ -254,20 +254,20 @@ const PaymentCheckout = () => {
                                                         onClick={() => setSelectedPlan(plan)}
                                                         className={`border-2 p-4 rounded-lg cursor-pointer transition-all ${
                                                             selectedPlan?.id === plan.id
-                                                                ? 'border-primary bg-blue-50'
+                                                                ? 'border-primary bg-blue-50 dark:bg-blue-900'
                                                                 : 'border-gray-200 hover:border-primary'
                                                         }`}
                                                     >
                                                         <div className="flex items-start justify-between mb-2">
                                                             <div>
-                                                                <h4 className="font-bold text-gray-900">{plan.name}</h4>
+                                                                <h4 className="font-bold text-gray-900 dark:text-white">{plan.name}</h4>
                                                                 <p className="text-xs text-gray-500 mt-1">Every {plan.interval.toLowerCase()}</p>
                                                             </div>
                                                             {selectedPlan?.id === plan.id && (
                                                                 <FaCheck className="text-primary mt-1" />
                                                             )}
                                                         </div>
-                                                        <div className="text-2xl font-bold text-primary">
+                                                        <div className="text-2xl font-bold text-secondary">
                                                             Le {Number(plan.price).toLocaleString()}
                                                         </div>
                                                     </div>
@@ -283,7 +283,7 @@ const PaymentCheckout = () => {
                             {type === 'BUSINESS_LICENSE' && (
                                 <div className="space-y-4">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-3">Select Demand Notice to Pay</label>
+                                        <label className="block text-sm font-medium text-gray-700 dark:text-white mb-3">Select Demand Notice to Pay</label>
                                         {noticesLoading ? (
                                             <div className="text-center py-6 text-gray-500">Loading your demand notices...</div>
                                         ) : businessLicenseNotices.length > 0 ? (
@@ -331,7 +331,7 @@ const PaymentCheckout = () => {
 
                             {type !== 'LOCAL_TAX' && type !== 'CITY_RATE' && type !== 'WASTE_COLLECTION' && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Payment Amount (Le)</label>
+                                    <label className="block text-sm font-medium text-gray-700 dark:text-white mb-1">Payment Amount (Le)</label>
                                     <input
                                         type="number"
                                         value={amount}
@@ -380,16 +380,16 @@ const PaymentCheckout = () => {
                 {/* Summary */}
                 <div>
                     <Card className="p-6 bg-gray-50">
-                        <h3 className="font-bold text-gray-900 mb-4">Order Summary</h3>
+                        <h3 className="font-bold text-gray-900 mb-4 dark:text-white">Order Summary</h3>
                         <div className="space-y-3 pb-4 border-b border-gray-200">
                             {type === 'LOCAL_TAX' && (
                                 <>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-600">Service Fee</span>
+                                        <span className="text-gray-600 dark:text-gray-400">Service Fee</span>
                                         <span className="font-medium">Le 10</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
-                                        <span className="text-gray-600">Processing</span>
+                                        <span className="text-gray-600 dark:text-gray-400">Processing</span>
                                         <span className="font-medium">Le 0.00</span>
                                     </div>
                                 </>
@@ -470,7 +470,7 @@ const PaymentCheckout = () => {
                             )}
                         </div>
                         <div className="flex justify-between items-center pt-4">
-                            <span className="font-bold text-lg text-gray-900">Total Payment</span>
+                            <span className="font-bold text-lg text-gray-900 dark:text-white">Total Payment</span>
                             <span className="font-bold text-xl text-primary">
                                 Le {type === 'LOCAL_TAX' ? '10.00' : type === 'WASTE_COLLECTION' && selectedPlan ? Number(selectedPlan.price).toLocaleString() : type === 'BUSINESS_LICENSE' && selectedNotice ? Number(selectedNotice.amount_due).toLocaleString() : Number(amount || 0).toLocaleString()}
                             </span>

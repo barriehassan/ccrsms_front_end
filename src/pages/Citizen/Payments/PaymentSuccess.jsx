@@ -13,13 +13,14 @@ const PaymentSuccess = () => {
 
     // Fallback data if location state is missing
     const { type, amount, date, billId } = location.state || {
-        type: 'Local Tax',
+        type: type,
         amount: 5000,
         date: new Date().toLocaleDateString(),
         billId: '0009939'
     };
 
     const receiptId = billId || "FCC " + Math.floor(1000000 + Math.random() * 9000000);
+    const servicetype = type || "Local Tax";
     const year = new Date().getFullYear();
 
     const handlePrint = () => {
@@ -112,7 +113,7 @@ const PaymentSuccess = () => {
 
                 <div className="text-center mb-8">
                     <h2 className="text-2xl md:text-3xl font-bold italic mb-1 leading-tight tracking-wide">
-                        Local Tax Receipt {year}
+                        {servicetype} {year}
                     </h2>
                     <h1 className="text-xl md:text-2xl font-bold tracking-widest uppercase border-b-2 border-gray-800 inline-block pb-1">
                         FREETOWN CITY COUNCIL

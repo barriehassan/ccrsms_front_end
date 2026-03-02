@@ -5,6 +5,7 @@ import SidebarCitizen from './components/SidebarCitizen';
 import SidebarAdmin from './components/SidebarAdmin';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ROLES } from './utils/constants';
+import WhatsAppWidget from './components/UI/WhatsAppWidget';
 
 // Import Pages (Public)
 // Import Pages (Public)
@@ -84,7 +85,7 @@ const CitizenLayout = () => {
   return (
     <div className="flex">
       <SidebarCitizen isCollapsed={isCollapsed} toggleSidebar={() => setIsCollapsed(!isCollapsed)} />
-      <main className={`flex-grow bg-secondary min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-8' : 'ml-10'}`}>
+      <main className={`flex-grow bg-secondary dark:bg-dark-bg min-h-screen transition-all duration-300 ${isCollapsed ? 'ml-8' : 'ml-10'}`}>
         <Outlet />
       </main>
     </div>
@@ -198,6 +199,7 @@ function App() {
           <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
+      <WhatsAppWidget />
     </div>
   );
 }

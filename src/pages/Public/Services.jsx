@@ -2,46 +2,42 @@ import { Link } from 'react-router-dom';
 import { FaArrowRight } from 'react-icons/fa';
 import { servicesData } from '../../data/publicData';
 import Button from '../../components/UI/Button';
+import ParallaxHero from '../../components/UI/ParallaxHero';
 
 const Services = () => {
     return (
-        <div className="min-h-screen bg-secondary font-sans">
+        <div className="min-h-screen bg-secondary dark:bg-dark-bg transition-colors duration-300">
             {/* Header */}
-            {/* Header */}
-            <section className="relative bg-primary text-white py-32 lg:py-40 text-center overflow-hidden">
-                <div className="absolute inset-0 z-0 opacity-20 bg-[url('https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Freetown_Sierra_Leone_2.jpg/1280px-Freetown_Sierra_Leone_2.jpg')] bg-cover bg-center"></div>
-
-                <div className="container mx-auto px-4 relative z-10">
-                    <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg">Our Services</h1>
-                    <p className="text-xl md:text-2xl max-w-3xl mx-auto text-blue-100 font-light drop-shadow-md">
-                        Efficient, transparent, and digital. Delivering municipal services directly to the people of Freetown.
-                    </p>
-                </div>
-            </section>
+            <ParallaxHero
+                title="Our Services"
+                subtitle="Efficient, transparent, and digital. We bring municipal services directly to your fingertips."
+                image="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80"
+                height="min-h-[50vh]"
+            />
 
             {/* Services Grid */}
-            <section className="py-24 container mx-auto px-4 lg:px-12">
-                <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-10 max-w-6xl mx-auto">
+            <section className="py-20 container mx-auto px-4">
+                <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
                     {servicesData.map((service) => (
-                        <div key={service.id} className="bg-white p-10 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col group">
-                            <div className="flex items-center gap-6 mb-8">
-                                <div className="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center text-primary text-4xl shrink-0 group-hover:bg-primary group-hover:text-white transition-colors duration-300 shadow-sm">
+                        <div key={service.id} className="bg-white dark:bg-dark-card p-8 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col dark:border dark:border-gray-800">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-16 h-16 bg-blue-50 dark:bg-blue-900/30 rounded-2xl flex items-center justify-center text-primary dark:text-accent text-3xl shrink-0">
                                     <service.icon />
                                 </div>
                                 <div>
-                                    <h3 className="text-3xl font-bold text-gray-900 leading-tight group-hover:text-primary transition-colors">{service.title}</h3>
-                                    <p className="text-sm text-gray-500 font-bold uppercase tracking-wider mt-2 bg-gray-100 inline-block px-2 py-1 rounded">{service.price}</p>
+                                    <h3 className="text-2xl font-bold text-gray-900 dark:text-white leading-tight">{service.title}</h3>
+                                    <p className="text-sm text-gray-500 dark:text-gray-400 font-medium mt-1">{service.price}</p>
                                 </div>
                             </div>
 
-                            <p className="text-gray-600 text-lg leading-relaxed mb-10 flex-grow border-l-2 border-gray-100 pl-4">
+                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-8 flex-grow">
                                 {service.shortDesc}
                             </p>
 
                             <Link to={`/services/${service.id}`}>
-                                <Button className="w-full justify-between group h-14 text-lg font-semibold bg-gray-50 text-gray-800 hover:bg-primary hover:text-white border-0">
-                                    View Service Details
-                                    <FaArrowRight className="group-hover:translate-x-2 transition-transform duration-300" />
+                                <Button className="w-full justify-between group dark:bg-primary dark:text-white">
+                                    View Details
+                                    <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                                 </Button>
                             </Link>
                         </div>
@@ -50,12 +46,11 @@ const Services = () => {
             </section>
 
             {/* CTA */}
-            <section className="py-24 bg-white text-center border-t border-gray-100">
+            <section className="py-16 bg-white dark:bg-dark-card text-center dark:border-t dark:border-gray-800">
                 <div className="container mx-auto px-4">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-900">Need help with a service?</h2>
-                    <p className="text-gray-600 mb-10 text-lg max-w-2xl mx-auto">Our support team is available to assist you with any inquiries regarding the application process.</p>
+                    <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Need help with a service?</h2>
                     <Link to="/contact">
-                        <Button variant="outline" size="lg" className="border-2 border-primary text-primary hover:bg-primary hover:text-white px-10 py-4 font-bold rounded-full transition-all">Contact Support</Button>
+                        <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white dark:border-accent dark:text-accent dark:hover:bg-accent dark:hover:text-dark">Contact Support</Button>
                     </Link>
                 </div>
             </section>

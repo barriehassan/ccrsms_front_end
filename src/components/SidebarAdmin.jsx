@@ -1,12 +1,14 @@
 import { Link, useLocation } from 'react-router-dom';
-import { FaTachometerAlt, FaClipboardList, FaUsers, FaChartBar, FaSignOutAlt, FaCog, FaBars, FaTimes, FaUserShield } from 'react-icons/fa';
+import { FaTachometerAlt, FaClipboardList, FaUsers, FaChartBar, FaSignOutAlt, FaCog, FaBars, FaTimes, FaUserShield, FaMoon, FaSun } from 'react-icons/fa';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import Swal from 'sweetalert2';
 import clsx from 'clsx';
 
 const SidebarAdmin = ({ isCollapsed, toggleSidebar }) => {
     const location = useLocation();
     const { logout } = useAuth();
+    const { theme, toggleTheme } = useTheme();
 
     const navItems = [
         { path: '/admin/dashboard', label: 'Dashboard', icon: FaTachometerAlt },
@@ -72,7 +74,21 @@ const SidebarAdmin = ({ isCollapsed, toggleSidebar }) => {
                 })}
             </nav>
 
-            <div className="p-4 border-t border-gray-700">
+            <div className="p-4 border-t border-gray-700 space-y-2">
+                <button
+                    onClick={toggleTheme}
+                    title={isCollapsed ? 'Toggle Theme' : ''}
+                    className={clsx(
+                        "flex items-center gap-3 px-3 py-3 w-full rounded-lg transition-colors font-medium whitespace-nowrap",
+                        theme === 'light'
+                            ? "text-gray-400 hover:bg-gray-800"
+                            : "text-yellow-400 hover:bg-gray-800",
+                        isCollapsed && 'justify-center'
+                    )}
+                >
+                    {theme === 'light' ? <FaMoon className="text-xl flex-shrink-0" /> : <FaSun className="text-xl flex-shrink-0" />}
+                    {!isCollapsed && <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>}
+                </button>
                 <button
                     onClick={handleLogout}
                     title={isCollapsed ? 'Logout' : ''}

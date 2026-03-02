@@ -3,6 +3,7 @@ import { FaMapMarkedAlt, FaSearch, FaUsers, FaInfoCircle, FaChevronLeft, FaChevr
 import { wardsData } from '../../data/publicData';
 import Button from '../../components/UI/Button';
 import Input from '../../components/UI/Input';
+import ParallaxHero from '../../components/UI/ParallaxHero';
 
 const Wards = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -29,26 +30,23 @@ const Wards = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
-        <div className="min-h-screen font-sans bg-gray-50">
+        <div className="min-h-screen font-sans bg-gray-50 dark:bg-dark-bg transition-colors duration-300">
             {/* Hero Section */}
-            <section className="relative bg-primary text-white py-32 lg:py-40 text-center overflow-hidden">
-                <div className="absolute inset-0 z-0 opacity-20 bg-[url('https://images.unsplash.com/photo-1577705998148-6da4f3963bc8?q=80&w=1974&auto=format&fit=crop')] bg-cover bg-center"></div>
-                <div className="container mx-auto px-4 relative z-10">
-                    <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight drop-shadow-lg">Know Your Ward</h1>
-                    <p className="text-xl md:text-2xl max-w-3xl mx-auto text-blue-100 font-light drop-shadow-md">
-                        Discover the specific areas, boundaries, and demographics of your local ward. Verified information for informed citizens.
-                    </p>
-                </div>
-            </section>
+            <ParallaxHero
+                title="Know Your Ward"
+                subtitle="Discover the specific areas, boundaries, and demographics of your local ward. Verified information for informed citizens."
+                image="https://images.unsplash.com/photo-1577705998148-6da4f3963bc8?q=80&w=1974&auto=format&fit=crop"
+                height="min-h-[50vh]"
+            />
 
             {/* Search Section */}
             <section className="relative -mt-8 z-20 px-4">
-                <div className="container mx-auto max-w-3xl bg-white p-4 rounded-full shadow-2xl flex items-center border border-gray-100">
-                    <FaSearch className="text-gray-400 text-xl ml-4 mr-4" />
+                <div className="container mx-auto max-w-3xl bg-white dark:bg-dark-card p-4 rounded-full shadow-2xl flex items-center border border-gray-100 dark:border-gray-800 transition-colors duration-300">
+                    <FaSearch className="text-gray-400 dark:text-gray-500 text-xl ml-4 mr-4" />
                     <input
                         type="text"
                         placeholder="Search by Ward Number (e.g., 401) or Area Name (e.g., Lumley)"
-                        className="flex-grow text-lg py-3 px-2 outline-none text-gray-700 placeholder-gray-400"
+                        className="flex-grow text-lg py-3 px-2 outline-none text-gray-700 dark:text-gray-200 bg-transparent placeholder-gray-400 dark:placeholder-gray-500"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -59,17 +57,17 @@ const Wards = () => {
             {/* Wards Grid */}
             <section className="py-20 container mx-auto px-4 lg:px-12">
                 <div className="flex justify-between items-center mb-10">
-                    <h2 className="text-3xl font-bold text-gray-900">
+                    <h2 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
                         {filteredWards.length === wardsData.length ? 'All Wards' : `Found ${filteredWards.length} Wards`}
                     </h2>
-                    <span className="text-gray-500 font-medium">Freetown Municipality</span>
+                    <span className="text-gray-500 dark:text-gray-400 font-medium transition-colors duration-300">Freetown Municipality</span>
                 </div>
 
                 {filteredWards.length > 0 ? (
                     <>
                         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                             {currentItems.map((ward) => (
-                                <div key={ward.id} className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:-translate-y-1 group flex flex-col">
+                                <div key={ward.id} className="bg-white dark:bg-dark-card rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-800 hover:-translate-y-1 group flex flex-col">
                                     <div className="bg-gradient-to-r from-blue-600 to-blue-800 p-6 text-white relative overflow-hidden">
                                         <div className="absolute top-0 right-0 p-4 opacity-10">
                                             <FaMapMarkedAlt className="text-8xl" />
@@ -84,29 +82,29 @@ const Wards = () => {
 
                                     <div className="p-8 flex-grow flex flex-col">
                                         <div className="mb-6">
-                                            <h4 className="flex items-center gap-2 text-gray-500 font-bold uppercase text-xs tracking-wide mb-2">
+                                            <h4 className="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-bold uppercase text-xs tracking-wide mb-2 transition-colors duration-300">
                                                 <FaMapMarkedAlt /> Coverage Areas
                                             </h4>
-                                            <p className="text-xl font-bold text-gray-900 leading-tight">
+                                            <p className="text-xl font-bold text-gray-900 dark:text-white leading-tight transition-colors duration-300">
                                                 {ward.area}
                                             </p>
                                         </div>
 
                                         <div className="mb-6 flex-grow">
-                                            <h4 className="flex items-center gap-2 text-gray-500 font-bold uppercase text-xs tracking-wide mb-2">
+                                            <h4 className="flex items-center gap-2 text-gray-500 dark:text-gray-400 font-bold uppercase text-xs tracking-wide mb-2 transition-colors duration-300">
                                                 <FaInfoCircle /> Description
                                             </h4>
-                                            <p className="text-gray-600 leading-relaxed text-sm">
+                                            <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm transition-colors duration-300">
                                                 {ward.desc}
                                             </p>
                                         </div>
 
-                                        <div className="mt-auto pt-6 border-t border-gray-100 flex items-center justify-between text-gray-500">
-                                            <div className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                                        <div className="mt-auto pt-6 border-t border-gray-100 dark:border-gray-800 flex items-center justify-between text-gray-500 dark:text-gray-400 transition-colors duration-300">
+                                            <div className="flex items-center gap-2 group-hover:text-primary dark:group-hover:text-accent transition-colors">
                                                 <FaUsers />
                                                 <span className="font-medium text-sm">Population</span>
                                             </div>
-                                            <span className="font-bold text-gray-900 text-lg">{ward.pop}</span>
+                                            <span className="font-bold text-gray-900 dark:text-white text-lg transition-colors duration-300">{ward.pop}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -120,7 +118,7 @@ const Wards = () => {
                                     onClick={() => paginate(currentPage - 1)}
                                     disabled={currentPage === 1}
                                     variant="outline"
-                                    className="border-gray-300 disabled:opacity-50"
+                                    className="border-gray-300 dark:border-gray-600 dark:text-gray-300 disabled:opacity-50"
                                 >
                                     Previous
                                 </Button>
@@ -130,8 +128,8 @@ const Wards = () => {
                                         key={i + 1}
                                         onClick={() => paginate(i + 1)}
                                         className={`w-10 h-10 rounded-full font-bold transition-all ${currentPage === i + 1
-                                            ? 'bg-primary text-white shadow-lg scale-110'
-                                            : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'
+                                            ? 'bg-primary dark:bg-accent text-white dark:text-dark shadow-lg scale-110'
+                                            : 'bg-white dark:bg-dark-card text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 border border-gray-200 dark:border-gray-700'
                                             }`}
                                     >
                                         {i + 1}
@@ -142,7 +140,7 @@ const Wards = () => {
                                     onClick={() => paginate(currentPage + 1)}
                                     disabled={currentPage === totalPages}
                                     variant="outline"
-                                    className="border-gray-300 disabled:opacity-50"
+                                    className="border-gray-300 dark:border-gray-600 dark:text-gray-300 disabled:opacity-50"
                                 >
                                     Next
                                 </Button>
@@ -150,11 +148,11 @@ const Wards = () => {
                         )}
                     </>
                 ) : (
-                    <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100">
-                        <div className="text-6xl text-gray-300 mb-6 flex justify-center"><FaSearch /></div>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">No Wards Found</h3>
-                        <p className="text-gray-500">We couldn't find any wards matching "{searchTerm}". Try checking the number or spelling.</p>
-                        <Button variant="outline" className="mt-6" onClick={() => setSearchTerm('')}>Clear Search</Button>
+                    <div className="text-center py-20 bg-white dark:bg-dark-card rounded-3xl shadow-sm border border-gray-100 dark:border-gray-800 transition-colors duration-300">
+                        <div className="text-6xl text-gray-300 dark:text-gray-600 mb-6 flex justify-center"><FaSearch /></div>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">No Wards Found</h3>
+                        <p className="text-gray-500 dark:text-gray-400">We couldn't find any wards matching "{searchTerm}". Try checking the number or spelling.</p>
+                        <Button variant="outline" className="mt-6 dark:border-gray-600 dark:text-gray-300" onClick={() => setSearchTerm('')}>Clear Search</Button>
                     </div>
                 )}
             </section>

@@ -103,7 +103,7 @@ const ComplaintDetails = () => {
                 <div className="md:col-span-2 space-y-6">
                     <Card>
                         <div className="flex justify-between items-start mb-4">
-                            <h1 className="text-2xl font-bold text-gray-900">{complaint.title}</h1>
+                            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{complaint.title}</h1>
                             <span className={`px-3 py-1 rounded-full text-sm font-bold ${getStatusColor(complaint.status)}`}>
                                 {complaint.status.replace('_', ' ')}
                             </span>
@@ -122,21 +122,17 @@ const ComplaintDetails = () => {
                                 </div>
                             )}
 
-                            {complaint.location && (
-                                <div className="flex items-center gap-1">
-                                    <FaMapMarkerAlt /> {complaint.location}
-                                </div>
-                            )}
+                            
                         </div>
 
                         <div className="mb-6">
-                            <h3 className="font-semibold text-gray-900 mb-2">Description</h3>
+                            <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Description</h3>
                             <p className="text-gray-600 leading-relaxed whitespace-pre-wrap">{complaint.description}</p>
                         </div>
 
                         {complaint.evidence_image && (
                             <div>
-                                <h3 className="font-semibold text-gray-900 mb-2">Attached Evidence</h3>
+                                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Attached Evidence</h3>
                                 <img src={complaint.evidence_image} alt="Complaint Evidence" className="rounded-lg w-full object-cover max-h-96" />
                             </div>
                         )}

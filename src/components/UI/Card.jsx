@@ -7,7 +7,7 @@ const Card = ({ children, className, ...props }) => {
         <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className={twMerge('bg-white rounded-xl shadow-sm border border-gray-100 p-6', className)}
+            className={twMerge('bg-white dark:bg-dark-card rounded-xl shadow-sm border border-gray-100 dark:border-gray-800 p-6 transition-colors duration-300', className)}
             {...props}
         >
             {children}

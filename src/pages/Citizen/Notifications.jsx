@@ -58,14 +58,14 @@ const Notifications = () => {
         <div className="p-8 max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Complaint Updates & Activity</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Complaint Updates & Activity</h1>
                     <p className="text-gray-600 mt-1">Track all updates and changes to your complaints</p>
                 </div>
             </div>
 
             <div className="space-y-4">
                 {loading ? (
-                    <div className="flex justify-center p-8">
+                    <div className="flex justify-center p-8 dark:text-white">
                         <FaSpinner className="animate-spin text-4xl text-primary" />
                     </div>
                 ) : complaints.length > 0 ? (
@@ -78,18 +78,18 @@ const Notifications = () => {
                                 {getStatusIcon(complaint.status)}
                             </div>
                             <div className="flex-1">
-                                <p className="text-gray-900 font-semibold">
+                                <p className="text-gray-900 font-semibold dark:text-white">
                                     {getStatusMessage(complaint)}
                                 </p>
-                                <div className="flex gap-4 mt-2 text-xs text-gray-600">
+                                <div className="flex gap-4 mt-2 text-xs text-gray-600 dark:text-gray-400 dark:text-white">
                                     <span className="flex items-center gap-1">
                                         <FaClock className="text-[10px]" />
                                         {new Date(complaint.created_at).toLocaleDateString()}
                                     </span>
-                                    <span className="px-2 py-1 bg-white/50 rounded font-medium">
+                                    <span className="px-2 py-1 bg-white/50 dark:text-white rounded font-medium">
                                         ID: {complaint.id}
                                     </span>
-                                    <span className="px-2 py-1 bg-white/50 rounded font-medium">
+                                    <span className="px-2 py-1 bg-white/50 dark:text-white rounded font-medium">
                                         {complaint.status.replace('_', ' ')}
                                     </span>
                                 </div>

@@ -121,7 +121,7 @@ const PaymentDashboard = () => {
         <div className="p-8">
             <header className="mb-8 flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Payments & Bills</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Payments & Bills</h1>
                     <p className="text-gray-500">Manage your municipal fees and view transaction history.</p>
                 </div>
                 <Button onClick={() => navigate('/citizen/payments/new')} className="flex items-center gap-2">
@@ -137,7 +137,7 @@ const PaymentDashboard = () => {
                     </div>
                     <div>
                         <p className="text-gray-500 text-sm font-medium">Total Paid (YTD)</p>
-                        <h3 className="text-2xl font-bold text-gray-900">Le {stats.totalPaid}</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Le {stats.totalPaid}</h3>
                     </div>
                 </Card>
 
@@ -147,7 +147,7 @@ const PaymentDashboard = () => {
                     </div>
                     <div>
                         <p className="text-gray-500 text-sm font-medium">Pending Bills</p>
-                        <h3 className="text-2xl font-bold text-gray-900">Le {stats.pendingAmount}</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Le {stats.pendingAmount}</h3>
                     </div>
                 </Card>
 
@@ -157,7 +157,7 @@ const PaymentDashboard = () => {
                     </div>
                     <div>
                         <p className="text-gray-500 text-sm font-medium">Last Payment</p>
-                        <h3 className="text-2xl font-bold text-gray-900">Le {stats.lastPaymentAmount}</h3>
+                        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">Le {stats.lastPaymentAmount}</h3>
                     </div>
                 </Card>
             </div>
@@ -168,7 +168,7 @@ const PaymentDashboard = () => {
                     {/* Pending Bills */}
                     {pendingBills.length > 0 && (
                         <Card className="p-6">
-                            <h3 className="text-lg font-bold text-gray-900 mb-4">Pending Bills</h3>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4">Pending Bills</h3>
                             <div className="space-y-3">
                                 {pendingBills.map((bill) => (
                                     <div key={bill.id} className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg flex justify-between items-center">
@@ -188,7 +188,7 @@ const PaymentDashboard = () => {
 
                     <Card className="p-6">
                         <div className="flex justify-between items-center mb-6">
-                            <h3 className="text-lg font-bold text-gray-900">Recent Transactions</h3>
+                            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Recent Transactions</h3>
                             <button onClick={handleViewAll} className="text-primary text-sm font-medium hover:underline flex items-center gap-1">
                                 View All <FaArrowRight />
                             </button>
@@ -207,11 +207,11 @@ const PaymentDashboard = () => {
                                     </thead>
                                     <tbody className="divide-y divide-gray-100">
                                         {recentPayments.map((tx) => (
-                                            <tr key={tx.id} className="hover:bg-gray-50">
-                                                <td className="p-3 text-sm font-medium text-gray-900">#{tx.transactionId}</td>
-                                                <td className="p-3 text-sm text-gray-600">{tx.type}</td>
-                                                <td className="p-3 text-sm font-bold text-gray-900">Le {tx.amount}</td>
-                                                <td className="p-3 text-sm text-gray-500">{tx.date}</td>
+                                            <tr key={tx.id} className="dark:hover:bg-gray-700 hover:bg-gray-50">
+                                                <td className="p-3 text-sm dark:text-white font-medium text-gray-900">#{tx.transactionId}</td>
+                                                <td className="p-3 text-sm dark:text-white text-gray-600">{tx.type}</td>
+                                                <td className="p-3 text-sm dark:text-white font-bold text-gray-900">Le {tx.amount}</td>
+                                                <td className="p-3 text-sm dark:text-white text-gray-500">{tx.date}</td>
                                                 <td className="p-3">
                                                     <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                                                         tx.status === 'PAID' ? 'bg-green-100 text-green-700' : 

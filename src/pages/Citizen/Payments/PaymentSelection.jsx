@@ -48,7 +48,7 @@ const PaymentSelection = () => {
     return (
         <div className="p-8">
             <header className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Select Service Type</h1>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Select Service Type</h1>
                 <p className="text-gray-500">Choose a category to proceed with your payment.</p>
             </header>
 
@@ -60,7 +60,7 @@ const PaymentSelection = () => {
                             <div className="w-12 h-12 rounded-full flex items-center justify-center text-white mb-4" style={{ backgroundColor: `var(--color-${type.color}-600, ${type.color === 'blue' ? '#2563eb' : type.color === 'green' ? '#16a34a' : type.color === 'orange' ? '#f97316' : '#9333ea'})` }}>
                                 <Icon className="text-xl" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">{type.title}</h3>
+                            <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{type.title}</h3>
                             <p className="text-gray-600 mb-6 min-h-[48px]">{type.desc}</p>
 
                             <div className="flex justify-end">

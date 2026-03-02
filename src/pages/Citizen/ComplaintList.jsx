@@ -74,7 +74,7 @@ const ComplaintList = () => {
     return (
         <div className="p-8 max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-gray-900">My Complaints</h1>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Complaints</h1>
                 <Link to="/citizen/complaints/create">
                     <Button className="flex items-center gap-2">
                         <FaPlus /> Submit New Complaint
@@ -119,12 +119,12 @@ const ComplaintList = () => {
                             <Card className="hover:shadow-md transition-shadow cursor-pointer border-l-4 border-l-primary group">
                                 <div className="flex justify-between items-center">
                                     <div>
-                                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors">
+                                        <h3 className="text-lg font-bold text-gray-900 group-hover:text-primary transition-colors dark:text-white">
                                             <span className="text-gray-400 mr-2">#{complaint.id}</span>
                                             {complaint.title}
                                         </h3>
                                         <p className="text-sm text-gray-500 mt-1">
-                                            <span className="font-medium text-gray-700">Category:</span> {complaint.categor} •
+                                            <span className="font-medium text-gray-700">Category:</span> {complaint.category} •
                                             <span className="ml-1">Submitted on {new Date(complaint.created_at).toLocaleDateString()}</span>
                                         </p>
                                     </div>

@@ -1,195 +1,308 @@
+import { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { FaBullhorn, FaCheckCircle, FaCity, FaUsers, FaMobileAlt, FaChartLine, FaLeaf, FaBuilding } from 'react-icons/fa';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import { FaBullhorn, FaCheckCircle, FaCity, FaUsers, FaMobileAlt, FaChartLine, FaWhatsapp, FaArrowRight } from 'react-icons/fa';
 import Button from '../../components/UI/Button';
 
+import Hero_bg from "../../assets/fccfull.jpg"
+import Mayor from "../../assets/yas2.jpeg"
+import Why_Bg from "../../assets/why.jpg"
+
 const Home = () => {
+  const ref = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"]
+  });
+
+  const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "50%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
   return (
-    <div className="flex flex-col min-h-screen font-sans">
+    <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative text-white py-32 lg:py-48 overflow-hidden">
-        {/* Background Image with Overlay */}
-        <div className="absolute inset-0 z-0">
+      <section ref={ref} className="relative min-h-screen flex items-center overflow-hidden pt-16 p-10">
+        <motion.div
+          style={{ y: backgroundY }}
+          className="absolute inset-0 z-0"
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-primary via-blue-900 to-dark opacity-90 dark:opacity-95 z-10" />
           <img
-            src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Freetown_from_harbour.jpg/1280px-Freetown_from_harbour.jpg"
-            alt="Freetown Cityscape from Harbour"
+            src={Hero_bg}
+            alt="City Skyline"
             className="w-full h-full object-cover"
-            onError={(e) => {
-              e.target.onerror = null;
-              e.target.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Freetown_Sierra_Leone.jpg/1280px-Freetown_Sierra_Leone.jpg";
-            }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-800/60 mix-blend-multiply"></div>
+        </motion.div>
+
+        {/* Floating Shapes */}
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+            className="absolute top-1/4 -right-20 w-96 h-96 bg-accent/20 rounded-full blur-3xl"
+          />
+          <motion.div
+            animate={{ rotate: -360 }}
+            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+            className="absolute -bottom-20 -left-20 w-72 h-72 bg-primary/30 rounded-full blur-3xl"
+          />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight tracking-tight drop-shadow-lg">
-              Transform <span className="text-accent">Freetown</span> <br />
-              <span className="text-3xl md:text-5xl font-semibold text-blue-200">Building a Better Community, Together.</span>
-            </h1>
-            <p className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto text-blue-100 font-light leading-relaxed drop-shadow-md">
-              The Official Council Complaint Reporting System. Empowering citizens to report issues, track progress, and improve our city's infrastructure and services.
-            </p>
+        <div className="container mx-auto px-4 relative z-20 text-center md:text-left grid md:grid-cols-2 gap-12 items-center">
+          <motion.div style={{ y: textY }}>
+            <motion.h1
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="text-5xl md:text-7xl font-black mb-6 leading-tight text-white tracking-tight"
+            >
+              Better Cities, <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-blue-300">
+                Brighter Futures.
+              </span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-lg md:text-2xl mb-10 text-blue-50 max-w-xl leading-relaxed"
+            >
+              Join the digital revolution. Report issues, track fixes, and connect with your council in real-time.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
+            >
+              <Link to="/auth/register">
+                <Button size="lg" className="w-full sm:w-auto text-lg px-8 py-4 shadow-2xl shadow-primary/30 hover:shadow-primary/50 transition-all hover:-translate-y-1">
+                  Get Started <FaArrowRight className="ml-2 inline" />
+                </Button>
+              </Link>
+              <Link to="/services">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg px-8 py-4 border-white/30 text-white hover:bg-white/10 backdrop-blur-sm">
+                  Our Services
+                </Button>
+              </Link>
+            </motion.div>
           </motion.div>
 
+          {/* Glass Card Showcase */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-            className="flex flex-col sm:flex-row gap-6 justify-center"
+            initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+            className="hidden md:block relative perspective-1000"
           >
-            <Link to="/auth/register">
-              <Button size="lg" className="w-full sm:w-auto text-lg px-10 py-4 shadow-2xl hover:scale-105 hover:shadow-blue-500/50 transition-all duration-300 bg-accent hover:bg-yellow-500 text-slate-900 font-bold border-none">
-                Report an Issue
-              </Button>
-            </Link>
-            <Link to="/services">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto text-lg px-10 py-4 border-2 border-white text-white hover:bg-white hover:text-blue-900 font-semibold backdrop-blur-sm transition-all duration-300">
-                Explore Services
-              </Button>
-            </Link>
+            <div className="p-8 rounded-3xl transform rotate-y-12 hover:rotate-y-0 transition-transform duration-500 ease-out border border-white/20 bg-white/10 backdrop-blur-xl shadow-2xl">
+              <div className="flex items-center gap-4 mb-6 border-b border-white/10 pb-4">
+                <div className="w-12 h-12 rounded-full bg-green-500 flex items-center justify-center text-white text-xl">
+                  <FaCheckCircle />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-lg">Pothole Reported</h3>
+                  <p className="text-blue-200 text-sm">Just now • 32 Wilkinson Rd</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="h-2 bg-white/20 rounded-full w-3/4"></div>
+                <div className="h-2 bg-white/20 rounded-full w-1/2"></div>
+              </div>
+              <div className="mt-8 flex justify-between items-center">
+                <div className="flex -space-x-2">
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="w-8 h-8 rounded-full bg-gray-300 border-2 border-transparent" />
+                  ))}
+                </div>
+                <div className="text-white font-bold text-sm bg-white/20 px-3 py-1 rounded-full">In Progress</div>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-12 bg-white shadow-lg -mt-10 relative z-20 container mx-auto rounded-2xl max-w-6xl border border-gray-100 transform hover:-translate-y-1 transition-transform duration-300">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-100">
-          <div className="p-4 group">
-            <h3 className="text-4xl md:text-5xl font-bold text-primary mb-2 group-hover:scale-110 transition-transform duration-300">15k+</h3>
-            <p className="text-gray-500 font-medium uppercase tracking-wide text-sm">Citizens Registered</p>
-          </div>
-          <div className="p-4 group">
-            <h3 className="text-4xl md:text-5xl font-bold text-green-600 mb-2 group-hover:scale-110 transition-transform duration-300">98%</h3>
-            <p className="text-gray-500 font-medium uppercase tracking-wide text-sm">Resolution Rate</p>
-          </div>
-          <div className="p-4 group">
-            <h3 className="text-4xl md:text-5xl font-bold text-blue-500 mb-2 group-hover:scale-110 transition-transform duration-300">24h</h3>
-            <p className="text-gray-500 font-medium uppercase tracking-wide text-sm">Avg. Response Time</p>
-          </div>
-          <div className="p-4 group">
-            <h3 className="text-4xl md:text-5xl font-bold text-purple-500 mb-2 group-hover:scale-110 transition-transform duration-300">50+</h3>
-            <p className="text-gray-500 font-medium uppercase tracking-wide text-sm">Communities Served</p>
+      <section className="relative z-30 -mt-10 px-4">
+        <div className="container mx-auto">
+          <div className="glass dark:glass rounded-2xl p-8 shadow-2xl">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-gray-200 dark:divide-gray-700">
+              {[
+                { label: "Citizens Registered", value: "15k+", color: "text-primary dark:text-blue-400" },
+                { label: "Resolution Rate", value: "98%", color: "text-green-600 dark:text-green-400" },
+                { label: "Avg. Response Time", value: "24h", color: "text-blue-500 dark:text-blue-300" },
+                { label: "Communities Served", value: "50+", color: "text-purple-500 dark:text-purple-400" }
+              ].map((stat, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: idx * 0.1 }}
+                >
+                  <h3 className={`text-4xl font-bold mb-2 ${stat.color}`}>{stat.value}</h3>
+                  <p className="text-gray-900 dark:text-gray-300 font-medium">{stat.label}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Mayor's Message */}
-      <section className="py-24 bg-white overflow-hidden">
-        <div className="container mx-auto px-4 lg:px-12">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-5/12 relative">
-              <div className="absolute -inset-4 bg-accent/20 rounded-3xl rotate-3 blur-lg"></div>
-              <img
-                src="/images/mayor_aki_sawyerr.jpg"
-                alt="Hon. Yvonne Aki-Sawyerr"
-                className="rounded-3xl shadow-2xl w-full relative z-10 object-cover aspect-[4/5] hover:scale-[1.01] transition-transform duration-500"
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = "https://placehold.co/400x500/0958d9/ffffff?text=Mayor+Aki-Sawyerr";
-                }}
-              />
-              <div className="absolute bottom-6 right-6 bg-white/90 backdrop-blur-md p-4 rounded-xl shadow-lg z-20 border border-gray-100">
-                <p className="font-bold text-gray-900">#TransformFreetown</p>
-                <p className="text-xs text-primary">Official Initiative</p>
+      <section className="py-24 dark:bg-dark-bg transition-colors duration-300" style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center gap-12">
+            <motion.div
+              className="md:w-1/3"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="relative group">
+                <div className="absolute inset-0 bg-primary/20 rounded-2xl transform rotate-3 transition-transform group-hover:rotate-6"></div>
+                <img src={Mayor} alt="City Mayor" className="relative rounded-2xl shadow-2xl w-full" />
               </div>
-            </div>
-            <div className="lg:w-7/12">
-              <div className="inline-block bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full font-semibold text-sm mb-6 border border-blue-100">
-                Leadership
-              </div>
-              <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8 leading-tight">
-                A Message from <br /> <span className="text-primary">Her Worship the Mayor</span>
-              </h2>
-              <blockquote className="text-xl md:text-2xl text-gray-600 italic mb-8 border-l-4 border-accent pl-6 py-2 leading-relaxed font-serif">
-                "Our 'Transform Freetown' agenda is built on the belief that together, we can overcome our challenges. This digital portal is a major step towards transparency and efficiency. I urge every Freetownian to use this tool to help us keep our city clean, safe, and thriving."
-              </blockquote>
+            </motion.div>
+            <motion.div
+              className="md:w-2/3"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">A Message from the Mayor</h2>
+              <p className="text-xl text-gray-800 dark:text-gray-300 italic mb-6">"Together, we build the future."</p>
+              <p className="text-gray-600 dark:text-gray-300 text-lg leading-relaxed mb-6">
+                "Welcome to our new digital council portal. This platform is a testament to our commitment to transparency, efficiency, and citizen engagement. By leveraging technology, we are ensuring that your voice is heard and that our city services are more accessible than ever before."
+              </p>
 
-              <div className="flex items-center gap-6 mt-10 border-t border-gray-100 pt-8">
+              <div className="flex items-center gap-4 mt-8">
                 <div>
-                  <h4 className="font-bold text-xl text-gray-900">Hon. Yvonne Aki-Sawyerr OBE</h4>
-                  <p className="text-primary font-medium mt-1">Mayor, Freetown Municipality</p>
-                </div>
-                {/* Simulated Signature */}
-                <div className="text-4xl font-cursive text-gray-400 font-bold ml-auto opacity-70" style={{ fontFamily: 'cursive' }}>
-                  Yvonne Aki-Sawyerr
+                  <h4 className="font-bold text-lg text-dark dark:text-white">Hon. Yvonne Aki-Sawyerr OBE</h4>
+                  <p className="text-primary dark:text-accent">Mayor, Freetown Municipality</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
 
 
       {/* Features Section */}
-      <section className="py-24 bg-secondary relative">
-        {/* Decorative Background Elements */}
-        <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
-          <FaLeaf className="text-9xl text-primary" />
-        </div>
+      <section className="py-24 bg-secondary dark:bg-dark-card transition-colors duration-300" style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+        <div className="container mx-auto px-4">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-dark dark:text-white mb-4">How It Works</h2>
+            <p className="dark:text-gray-200 max-w-2xl mx-auto">We've made it simple for you to contribute to your city's well-being. Here is how the process works from start to finish.</p>
+          </motion.div>
 
-        <div className="container mx-auto px-4 lg:px-12">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-5xl font-bold text-dark mb-6">How It Works</h2>
-            <p className="text-gray-600 text-xl max-w-2xl mx-auto leading-relaxed">
-              We've streamlined the process for you to contribute to your city's well-being. Three simple steps to make a difference.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-4 gap-10">
             {[
-              {
-                icon: FaBullhorn,
-                title: "1. Report an Issue",
-                desc: "Spot a problem? Take a photo, describe the issue (Sanitation, Roads, etc.), and submit it instantly via our portal."
-              },
-              {
-                icon: FaCity,
-                title: "2. Council Action",
-                desc: "Our dedicated officers receive your report, verify the details, and assign it to the relevant department for rapid resolution."
-              },
-              {
-                icon: FaCheckCircle,
-                title: "3. Resolution & Feedback",
-                desc: "Receive real-time notifications when the work is done. Verify the fix and rate our service to help us improve."
-              }
-            ].map((step, idx) => (
-              <div key={idx} className="bg-white p-10 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 group border border-gray-100 relative overflow-hidden">
-                <div className="absolute top-0 right-0 bg-gray-50 w-24 h-24 rounded-bl-full -mr-4 -mt-4 z-0 group-hover:bg-blue-50 transition-colors"></div>
-                <div className="relative z-10">
-                  <div className="w-20 h-20 bg-blue-50 text-primary rounded-2xl flex items-center justify-center text-3xl mx-auto mb-8 group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
-                    <step.icon />
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-gray-900">{step.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">
-                    {step.desc}
-                  </p>
+              { icon: <FaBullhorn />, title: "1. Report an Issue", desc: "Spot a problem? Take a photo, describe the issue, and submit it through our easy-to-use portal.", color: "bg-blue-100 text-primary", hover: "group-hover:bg-primary group-hover:text-white" },
+              { icon: <FaWhatsapp />, title: "2. WhatsApp Chat", desc: "Prefer social media? Send your complaint directly via WhatsApp for a quick interaction.", color: "bg-green-100 text-green-600", hover: "group-hover:bg-green-600 group-hover:text-white", link: true },
+              { icon: <FaChartLine />, title: "3. Track Progress", desc: "Get real-time updates as our teams assess and assign your complaint. You'll never be left in the dark.", color: "bg-purple-100 text-purple-600", hover: "group-hover:bg-purple-600 group-hover:text-white" },
+              { icon: <FaCheckCircle />, title: "4. Problem Solved", desc: "Receive a notification when the work is done. Rate the service and help us maintain high standards.", color: "bg-teal-100 text-teal-600", hover: "group-hover:bg-teal-600 group-hover:text-white" }
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+                className="glass2 dark:glass-dark p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all hover:-translate-y-2 text-center group dark:border dark:border-black-800"
+              >
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-6 transition-colors ${item.color} ${item.hover}`}>
+                  {item.icon}
                 </div>
-              </div>
+                <h3 className="text-xl font-bold mb-3 text-gray-900 dark:text-white">{item.title}</h3>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  {item.desc}
+                </p>
+                {item.link && (
+                  <a
+                    href="https://wa.me/23231107795?text=Hello%20Freetown%20City%20Council,%20I%20would%20like%20to%20report%20a%20complaint."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block mt-4 text-green-600 font-bold hover:underline"
+                  >
+                    Chat Now
+                  </a>
+                )}
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Why Choose Us */}
+      <section className="py-24 bg-white dark:bg-dark-bg transition-colors duration-300 relative overflow-hidden" style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">Empowering Citizens, <br /> Transforming Cities</h2>
+              <p className="text-gray-600 dark:text-gray-300 mb-6 text-lg">
+                CCRSMS is more than just a reporting tool; it's a bridge between the municipal council and the community. We believe in transparency, accountability, and rapid action.
+              </p>
+              <ul className="space-y-4">
+                {[
+                  { icon: <FaCity />, text: "Direct line to city departments" },
+                  { icon: <FaMobileAlt />, text: "Mobile-first design for on-the-go reporting" },
+                  { icon: <FaUsers />, text: "Community-driven prioritization" }
+                ].map((item, idx) => (
+                  <li key={idx} className="flex items-center gap-3">
+                    <span className="p-2 rounded-lg bg-primary/10 text-primary dark:text-accent dark:bg-accent/10 text-xl">{item.icon}</span>
+                    <span className="text-gray-900 dark:text-gray-300 font-medium">{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="mt-8">
+                <Link to="/about">
+                  <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-white dark:border-accent dark:text-accent dark:hover:bg-accent dark:hover:text-dark">Learn More About Us</Button>
+                </Link>
+              </div>
+            </motion.div>
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="absolute -inset-4 bg-accent/20 rounded-full blur-3xl animate-pulse"></div>
+              <img
+                src={Why_Bg}
+                alt="City Infrastructure"
+                className="rounded-2xl shadow-2xl relative z-10 w-full"
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
       {/* Latest News */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-4 lg:px-12">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-4">
+      <section className="py-24 bg-gray-50 dark:bg-dark-card transition-colors duration-300" style={{ paddingLeft: '5%', paddingRight: '5%' }}>
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-end mb-12">
             <div>
-              <h2 className="text-3xl md:text-5xl font-bold text-dark mb-4">Latest News & Updates</h2>
-              <p className="text-gray-600 text-lg">Stay informed about development projects and council announcements.</p>
+              <h2 className="text-3xl md:text-4xl font-bold text-dark dark:text-white mb-2">Latest News & Updates</h2>
+              <p className="dark:text-gray-200">Stay informed about what is happening in your city.</p>
             </div>
-            <Button variant="outline" className="border-gray-300 hover:border-primary hover:bg-primary hover:text-white transition-all">
-              View All Announcements
-            </Button>
+            <Button variant="outline" className="dark:border-gray-600 dark:hover:bg-gray-700">View All News</Button>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-10">
+          <div className="grid md:grid-cols-3 gap-8">
+            
+            
             {/* News Item 1 */}
             <div className="group cursor-pointer">
               <div className="rounded-2xl overflow-hidden shadow-lg mb-6 relative">
@@ -202,7 +315,7 @@ const Home = () => {
                   Infrastructure
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-primary transition-colors leading-tight">
+              <h3 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-primary transition-colors leading-tight dark:text-white">
                 Upgrade of City Infrastructure
               </h3>
               <p className="text-gray-500 mb-4 line-clamp-2">
@@ -223,7 +336,7 @@ const Home = () => {
                   Sanitation
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-primary transition-colors leading-tight">
+              <h3 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-primary transition-colors leading-tight dark:text-white">
                 Community Clean-up Initiative
               </h3>
               <p className="text-gray-500 mb-4 line-clamp-2">
@@ -244,7 +357,7 @@ const Home = () => {
                   Community
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-primary transition-colors leading-tight">
+              <h3 className="text-2xl font-bold mb-3 text-gray-900 group-hover:text-primary transition-colors leading-tight dark:text-white">
                 Engaging Local Communities
               </h3>
               <p className="text-gray-500 mb-4 line-clamp-2">
@@ -252,29 +365,32 @@ const Home = () => {
               </p>
               <span className="text-primary font-bold text-sm uppercase tracking-wide group-hover:underline">Read Full Story</span>
             </div>
+
+              
+          
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 bg-dark text-white text-center relative overflow-hidden">
-        {/* Abstract shapes */}
-        <div className="absolute top-0 left-0 w-full h-full opacity-10">
-          <div className="absolute top-10 left-10 w-64 h-64 bg-primary rounded-full blur-3xl mix-blend-screen"></div>
-          <div className="absolute bottom-10 right-10 w-80 h-80 bg-accent rounded-full blur-3xl mix-blend-screen"></div>
-        </div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-8">Ready to Make a Difference?</h2>
-          <p className="text-xl text-gray-300 mb-12 max-w-2xl mx-auto leading-relaxed">
-            Join thousands of Freetownians who are actively contributing to a cleaner, safer, and better city. Your voice matters.
+      <section className="py-24 bg-gradient-to-r from-dark to-gray-900 text-white text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <motion.div
+          className="container mx-auto px-4 relative z-10"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl md:text-5xl font-bold mb-6">Ready to Make a Difference?</h2>
+          <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+            Join thousands of other citizens who are actively contributing to a cleaner, safer, and better city.
           </p>
           <Link to="/auth/register">
-            <Button size="lg" className="bg-accent text-dark hover:bg-white hover:text-primary font-bold text-lg px-12 py-5 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+            <Button size="lg" className="bg-accent text-dark hover:bg-white hover:text-primary font-bold text-lg px-10 py-5 shadow-lg shadow-accent/20 hover:shadow-accent/40 transition-all hover:-translate-y-1">
               Get Started Now
             </Button>
           </Link>
-        </div>
+        </motion.div>
       </section>
     </div>
   );

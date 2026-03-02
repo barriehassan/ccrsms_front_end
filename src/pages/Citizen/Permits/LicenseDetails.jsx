@@ -257,10 +257,10 @@ const LicenseDetails = () => {
 
             <div className="flex flex-col md:flex-row gap-6">
                 {/* Certificate Preview */}
-                <div className="flex-1 bg-white p-8 shadow-2xl border-8 border-double border-gray-200 relative print:shadow-none print:border-4 print:w-full" ref={certificateRef}>
+                <div className="flex-1 glass2 dark:text-white p-8 shadow-2xl border-8 border-double border-gray-200 relative print:shadow-none print:border-4 print:w-full" ref={certificateRef}>
                     {/* Watermark */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none select-none overflow-hidden">
-                        <span className="text-9xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-500 -rotate-45 transform scale-150">
+                        <span className="text-9xl dark:text-gray-400 font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-500 -rotate-45 transform scale-150">
                             VALID
                         </span>
                     </div>
@@ -270,7 +270,7 @@ const LicenseDetails = () => {
                         <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-4">
                             SL
                         </div>
-                        <h1 className="text-2xl font-bold text-gray-900 uppercase tracking-widest">Freetown City Council</h1>
+                        <h1 className="text-2xl font-bold text-gray-900 dark:text-white uppercase tracking-widest">Freetown City Council</h1>
                         <p className="text-sm text-gray-600 mt-2 uppercase tracking-wide">Business License Certificate</p>
                     </div>
 
@@ -287,7 +287,7 @@ const LicenseDetails = () => {
                         {/* Business Name */}
                         <div>
                             <p className="text-xs text-gray-500 uppercase tracking-wide font-bold">Business Name</p>
-                            <p className="text-sm font-semibold text-gray-800 mt-1">{notice.business_name}</p>
+                            <p className="text-sm font-semibold text-gray-800 dark:text-white mt-1">{notice.business_name}</p>
                         </div>
 
                         {/* License Year */}
@@ -295,13 +295,13 @@ const LicenseDetails = () => {
                             <p className="text-xs text-gray-500 uppercase tracking-wide font-bold flex items-center gap-2 mb-1">
                                 <FaCalendarAlt className="text-primary" /> License Year
                             </p>
-                            <p className="text-sm font-semibold text-gray-800">{notice.license_year}</p>
+                            <p className="text-sm font-semibold text-gray-800 dark:text-white">{notice.license_year}</p>
                         </div>
 
                         {/* Issue Date */}
                         <div>
                             <p className="text-xs text-gray-500 uppercase tracking-wide font-bold">Issue Date</p>
-                            <p className="text-sm font-semibold text-gray-800 mt-1">{issueDate}</p>
+                            <p className="text-sm font-semibold text-gray-800 dark:text-white mt-1">{issueDate}</p>
                         </div>
 
                         {/* ROW 2 */}
@@ -310,13 +310,13 @@ const LicenseDetails = () => {
                             <p className="text-xs text-gray-500 uppercase tracking-wide font-bold flex items-center gap-2 mb-1">
                                 <FaBuilding className="text-primary" /> Owner
                             </p>
-                            <p className="text-sm font-semibold text-gray-800">{business?.owner || 'Not specified'}</p>
+                            <p className="text-sm font-semibold text-gray-800 dark:text-white">{business?.owner || 'Not specified'}</p>
                         </div>
 
                         {/* Notice Number */}
                         <div>
                             <p className="text-xs text-gray-500 uppercase tracking-wide font-bold">Notice Number</p>
-                            <p className="text-sm font-semibold text-gray-800 mt-1">{notice.notice_number}</p>
+                            <p className="text-sm font-semibold text-gray-800 dark:text-white mt-1">{notice.notice_number}</p>
                         </div>
 
                         {/* Empty space for alignment */}
@@ -327,7 +327,7 @@ const LicenseDetails = () => {
                             <p className="text-xs text-gray-500 uppercase tracking-wide font-bold flex items-center gap-2 mb-1">
                                 <FaMapMarkerAlt className="text-primary" /> Business Location
                             </p>
-                            <p className="text-sm text-gray-800">{business?.address || 'Not specified'}</p>
+                            <p className="text-sm text-gray-800 dark:text-white">{business?.address || 'Not specified'}</p>
                         </div>
                     </div>
 
@@ -354,11 +354,11 @@ const LicenseDetails = () => {
                     </Button>
 
                     <Card className="p-4 bg-gray-50">
-                        <h4 className="font-semibold text-gray-900 mb-2 text-sm">License Info</h4>
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-2 text-sm">License Info</h4>
                         <div className="space-y-2 text-xs text-gray-600">
-                            <p><span className="font-medium text-gray-900">Status:</span> {notice.status}</p>
-                            <p><span className="font-medium text-gray-900">Category:</span> {business?.category || 'N/A'}</p>
-                            <p><span className="font-medium text-gray-900">Valid For:</span> {notice.license_year}</p>
+                            <p><span className="font-medium text-gray-900 dark:text-white">Status:</span> {notice.status}</p>
+                            <p><span className="font-medium text-gray-900 dark:text-white">Category:</span> {business?.category || 'N/A'}</p>
+                            <p><span className="font-medium text-gray-900 dark:text-white">Valid For:</span> {notice.license_year}</p>
                         </div>
                     </Card>
 

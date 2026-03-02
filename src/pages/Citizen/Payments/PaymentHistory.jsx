@@ -5,7 +5,7 @@ import Button from '../../../components/UI/Button';
 import { getUserPayments } from '../../../services/paymentService';
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from "jspdf-autotable"
 
 const PaymentHistory = () => {
     const [allPayments, setAllPayments] = useState([]);
@@ -116,7 +116,7 @@ const PaymentHistory = () => {
             ]);
 
             // Add table with autoTable plugin
-            doc.autoTable({
+            autoTable(doc, {
                 head: [['Reference ID', 'Payment Type', 'Amount', 'Date', 'Method', 'Status']],
                 body: tableData,
                 startY: 35,
@@ -252,7 +252,7 @@ const PaymentHistory = () => {
         <div className="p-8">
             <header className="mb-8 flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Payment History</h1>
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Payment History</h1>
                     <p className="text-gray-500">Reference archive of all your municipal transactions.</p>
                 </div>
                 <Button variant="outline" onClick={handleExport} className="flex items-center gap-2">
@@ -276,7 +276,7 @@ const PaymentHistory = () => {
                     <select
                         value={filterStatus}
                         onChange={(e) => setFilterStatus(e.target.value)}
-                        className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary bg-white"
+                        className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-1 focus:ring-primary bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300"
                     >
                         <option value="all">All Status</option>
                         <option value="PAID">Paid</option>
@@ -301,12 +301,12 @@ const PaymentHistory = () => {
                             </thead>
                             <tbody className="divide-y divide-gray-100">
                                 {currentPageData.map((item) => (
-                                    <tr key={item.id} className="hover:bg-gray-50 transition-colors">
-                                        <td className="p-4 font-bold text-gray-900 font-mono">{item.referenceId}</td>
-                                        <td className="p-4 text-gray-700">{item.type}</td>
+                                    <tr key={item.id} className="hover:bg-gray-700 transition-colors">
+                                        <td className="p-4 font-bold text-gray-900 dark:text-white font-mono">{item.referenceId}</td>
+                                        <td className="p-4 text-gray-700 dark:text-white">{item.type}</td>
                                         <td className="p-4 text-gray-500">{item.date}</td>
                                         <td className="p-4 text-gray-500 text-sm">{item.method}</td>
-                                        <td className="p-4 font-bold text-gray-900">{item.amount}</td>
+                                        <td className="p-4 font-bold text-gray-900 dark:text-white">{item.amount}</td>
                                         <td className="p-4">
                                             <span className={`px-2 py-1 rounded-full text-xs font-bold ${
                                                 item.status === 'PAID' ? 'bg-green-100 text-green-700' :

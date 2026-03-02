@@ -4,14 +4,14 @@ import clsx from 'clsx';
 const Input = ({ label, error, className, rightElement, ...props }) => {
     return (
         <div className="flex flex-col gap-1 w-full">
-            {label && <label className="text-sm font-medium text-gray-700">{label}</label>}
+            {label && <label className="text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors duration-300">{label}</label>}
             <div className="relative w-full">
                 <input
                     className={clsx(
-                        'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors',
+                        'w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 transition-colors bg-white dark:bg-dark-card text-gray-900 dark:text-white dark:border-gray-700',
                         error
                             ? 'border-red-500 focus:ring-red-200'
-                            : 'border-gray-300 focus:border-primary focus:ring-blue-100',
+                            : 'border-gray-300 focus:border-primary focus:ring-blue-100 dark:focus:border-accent dark:focus:ring-accent/20',
                         rightElement ? 'pr-10' : '',
                         className
                     )}

@@ -9,8 +9,12 @@ export default defineConfig({
     react(),
     // basicSsl()
   ],
-  // server: {
-  //   host: true,  
-  //   https: true
-  // }
+  server: {
+    // Allows ngrok to tunnel to the dev server without "Invalid Host header" errors
+    allowedHosts: [
+      'unconvenable-nonservilely-gretta.ngrok-free.dev'
+    ],
+    // host: true,  
+    // https: true
+  }
 })
